@@ -25,7 +25,7 @@ namespace nFact.Shared
 
             var handler = MessageHandler.Instance;
             Console.Write(text);
-            handler.AddMessage(text, MessageState.OK);
+            handler.AddMessage(text, MessageState.Progress);
         }
 
         public void LogError(string text)

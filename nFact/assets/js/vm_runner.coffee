@@ -65,11 +65,17 @@ class App.Runner
 				msg = jQuery.parseJSON(data);
 				CURRENT_STATE = msg.State
 				switch (CURRENT_STATE)
+					when 'Progress'
+						addMessage('new', msg.Message, false)
+						setTimeout(
+							() -> _self.getOutput(), # Request next message
+							2000       # after 2 seconds 
+						)
 					when 'OK', 'Stopping'
 						addMessage('new', msg.Message)
 						setTimeout(
 							() -> _self.getOutput(), # Request next message
-							1000       # after 1 seconds 
+							1000       # after 1 second 
 						)
 					when 'Error' then addMessage('error', msg.Message)
 					when 'Completed', 'Stopped' 
@@ -87,10 +93,16 @@ class App.Runner
 			)
 	
 	addMessage = (type, message) ->
+		addMessage(type, message, true)
+
+	addMessage = (type, message, newLine) ->
 		if (message == '')
 			return
 		
-		$('#divMessages').append("<div class='msg " + type + "'>" + message + "</div>")
+		if newLine
+			$('#divMessages').append("<div class='msg " + type + "'>" + message + "</div>")
+		else
+			$('#divMessages').append("<span class='msg " + type + "'>" + message + "</span>")
 		
 		x = 0
 		doc = document.documentElement

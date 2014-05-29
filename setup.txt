@@ -1,5 +1,1 @@
-1. Copy NUnit to SpecReplay\tools
-2. Copy SpecFlow to SpecReplay\tools 
-3. Install Expression Encoder 4 SP2: http://www.microsoft.com/en-au/download/details.aspx?id=27870
-4. Unblock Nancy.ViewEngine.Razor
-5. Unblock runspecflow.ps1 
+1. Install Expression Encoder 4 SP2: http://www.microsoft.com/en-au/download/details.aspx?id=27870

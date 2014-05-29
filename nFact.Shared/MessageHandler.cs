@@ -4,7 +4,7 @@ using System.Text;
 
 namespace nFact.Shared
 {
-    public enum MessageState {OK, Error};
+    public enum MessageState {OK, Progress, Error};
 
     public class MessageHandler
     {

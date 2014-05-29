@@ -32,7 +32,7 @@ namespace nFact.Media
 
         private void OnProgress(object sender, EncodeProgressEventArgs e)
         {
-            _logger.LogProgress("...");
+            _logger.LogProgress(".");
         }
 
         public void Reset()
