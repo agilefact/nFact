@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>
+Online Fund Transfers
+</title>
+
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta name="generator" content="Wufoo">
+<meta name="robots" content="index, follow">
+
+<!-- CSS -->
+<link href="css/structure.css" rel="stylesheet">
+<link href="css/form.css" rel="stylesheet">
+
+<!-- JavaScript -->
+<!-- <script src="scripts/wufoo.js"></script>  -->
+
+	<script type="text/javascript">
+		var act_balance = 2000.00;
+		
+		function transfer(){
+		
+			
+			
+			var payeeList = Array("Jim","Tim","John");
+		
+		  	payee = document.getElementById("payee");
+			amount = document.getElementById("amount");
+			balance = document.getElementById("balance");
+			
+			message.innerText = "";
+			
+			if (payee.value == "")
+			{
+				message.innerText = "Please enter a valid Payee name";
+				return false;
+			}
+			if (amount.value == "")
+			{
+				message.innerText = "Please a valid amount";
+				return false;
+			}
+			
+			if(payeeList.indexOf(payee.value) == -1)
+			{
+				message.innerText = "Transfer failed!! '" + payee.value + "' is not registered in your List of Payees";
+				return false;
+			}
+			
+			if(amount.value > act_balance)
+			{
+				message.innerText = "Transfer failed!! account cannot be overdrawn";
+				return false;
+			}
+			
+			act_balance = act_balance - amount.value;
+			balance.value = act_balance.toFixed(2);
+			
+			message.innerText = "$" + amount.value + " transferred successfully to " + payee.value + "!!";
+			
+		}
+		
+	</script>
+
+
+<!--[if lt IE 10]>
+<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+
+<body id="public">
+<div id="container" class="ltr">
+
+<h1 id="logo">
+</h1>
+
+<div class="wufoo leftLabel page">
+<header id="header" class="info">
+<h2>Transfer Funds Online</h2>
+<div>Enter a Payee and amount and transfer funds instantly!!</div>
+</header>
+
+<ul>
+
+<li id="foli1" class="notranslate      ">
+<label class="desc" id="title1" for="payee">
+Name of Registered Payee:
+<span id="req_1" class="req">*</span>
+</label>
+<div>
+<input name="payee" id="payee" type="text" class="field text medium" value="" maxlength="255" tabindex="1" onkeyup=""/>
+</div>
+</li><li id="foli2" class="notranslate      ">
+<label class="desc" id="title2" for="amount">
+Amount:
+<span id="req_2" class="req">*</span>
+</label>
+<div>
+<input name="amount" id="amount" type="number" class="field number medium" value="" maxlength="255" tabindex="2" onkeyup=""/>
+</div>
+</li>
+<li>
+<label class="desc" id="title2" for="balance">
+Balance:
+<span id="req_2" class="req">*</span>
+</label>
+<div>
+	<input name="balance" id="balance" type="number" class="field number medium" value="2000.00" maxlength="255" tabindex="2" onkeyup="" readonly="true"/>
+</div>
+</li>
+
+ <li class="buttons ">
+	<div>
+		<input type="button" id="transfer" value="Transfer" onclick="transfer(); return false">
+	</div>
+</li>
+
+<center><label id="message"></label></center>
+
+</ul>
+</div>
+
+</div><!--container-->
+</body>
+</html>

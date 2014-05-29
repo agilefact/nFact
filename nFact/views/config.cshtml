@@ -1,0 +1,51 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<nFact.viewModels.ConfigViewModel>
+@{
+    Layout = "views/SiteLayout.cshtml";
+}
+
+@section ExtraHeaders{
+    <script src="/assets/js/vm_config.js" type="text/javascript"></script>
+}
+
+@if (string.IsNullOrEmpty(Model.Environment))
+{
+    <h2>Configuration</h2>
+}
+else
+{
+    <h2>Configuration - @Model.Environment</h2>
+}
+<p>File: @Model.FileName</p>
+<p>Path: @Model.FilePath</p>
+
+<div id="divConfig">
+    <table id="tblConfig" style="font-size: 14px">
+            @foreach (var setting in Model.AppSettings)
+            {
+                <tr>
+                    <td>
+                        <span>@setting.Name:&nbsp;</span>
+                    </td>
+                    
+                    @if (setting.IsCheckBox)
+                    {
+                        <td style="padding-bottom: 5px">
+                            <input name='@setting.Name' type='checkbox' @setting.CheckBoxValue/>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="padding-bottom: 5px">
+                            <input name='@setting.Name' type='text' value='@setting.Value' size=60 />
+                        </td>
+                    }
+                    <td></td>
+                </tr>
+            }
+    </table>
+</div>
+
+<div style="margin-top: 10px">
+    <button data-bind="click: save"  style="width: 60px">Save</button>
+    <button data-bind="click: back"  style="width: 60px">Back</button>
+</div>

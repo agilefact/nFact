@@ -1,0 +1,95 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+
+@{
+            var controlsDisplayMode = (Model.ControlsVisible) ? "inherit" : "none";
+}
+
+<div id="divControls" data-bind="with: controls" style="display: @controlsDisplayMode; background-color: #f5f5f5;">
+    <div class="row">
+        <div class="col-md-1"> 
+            <button data-bind="click: run" 
+                    class="btn btn-success"
+                    style="margin-left: 15px; margin-top: 10px">Run</button>  
+        </div> 
+        <div class="col-md-11">
+            <div class="row" >
+                <div class="col-md-10"> 
+                    <div style="margin-top: 5px">
+                        <div class="form-inline" >
+                            <label>Report: </label>
+                            <span>
+                                @if (Model.SpecSelectorVisible)
+                                {
+                                    <select data-bind="options: specs, value: selectedSpec" ></select>
+                                }
+                            </span>
+                            <label>Environment: </label>
+                            <span>
+                                @if (Model.EnvironmentSelectorVisible)
+                                {
+                                    <select data-bind="options: environments, value: selectedEnvironment" ></select>
+                                }
+                            </span>
+                            <a data-bind="click: navigate.bind($data, 'config')" href="#">Configure</a>@* <span>| </span>*@
+                            @*<a data-bind="click: navigate.bind($data, 'latest')" href="#">New Version</a>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2" >
+                        <p class="navbar-right" ><a href="#" data-bind="click: restart" class="navbar-link">Restart</a></p>
+                </div>
+            </div>
+            
+            <div class="row" style="position: relative; margin-top: 5px">
+                <div class="col-md-4"> 
+                    <div style="margin-top: 5px">
+                        <div class="form-inline" >
+                            <label>Record: </label>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" data-bind="checked: video"> Video
+                                </label>
+                            </div>
+                            @*<div class="checkbox">
+                                <label>
+                                    <input type="checkbox" data-bind="checked: steps"> Slides
+                                </label>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <ul class="pagination" style="margin: 0px;">
+                        @if (Model.PageMinVisible)
+                        {
+                            var href = string.Format("/{0}/{1}", Model.Spec, 1);
+                            <li><a href="@href" style="padding-top: 2; padding-bottom: 2">&laquo;</a></li>
+                        }
+                       
+                        @for (int test = Model.PageMin; test <= Model.PageMax; test++)
+                        {
+                            var href = string.Format("/{0}/{1}", Model.Spec, test);
+                            if (test == Model.PageCurrent)
+                            {
+                                <li class="active"><a href="@href" style="padding-top: 2; padding-bottom: 2">@test</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="@href" style="padding-top: 2; padding-bottom: 2">@test</a></li>
+                            }
+                        }
+
+                        @if (Model.PageMaxVisible)
+                        {
+                            var href = string.Format("/{0}/{1}", Model.Spec, Model.MaxTest);
+                            <li><a href="@href" style="padding-top: 2; padding-bottom: 2">&raquo;</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-md-2" style="top: 10">
+                        <p class="navbar-right" ><a href="#" data-bind="click: hide" class="navbar-link">Hide</a></p>
+                </div>
+            </div>
+         </div> 
+    </div>
+</div>

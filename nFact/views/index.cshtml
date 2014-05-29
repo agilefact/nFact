@@ -1,0 +1,11 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<nFact.viewModels.IndexViewModel>
+@{
+    Layout = "views/SiteLayout.cshtml";
+}
+
+@section ExtraHeaders{
+    <script src="/assets/js/vm_index.js"></script>
+    @Html.Raw(Model.ReportHeader)
+}
+
+@Html.Raw(Model.ReportBody)

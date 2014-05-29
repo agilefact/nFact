@@ -1,0 +1,14 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<nFact.viewModels.SourceViewModel>
+@{
+    Layout = "views/SiteLayout.cshtml";
+}
+
+<div>
+    <div>
+        <label>TFS Source:</label>
+        <input id="frmTFSSource" size="65" value="@Model.Source"/>
+    </div>
+    <div>
+        <button onclick="getSource()">Go</button>
+    </div>
+</div>

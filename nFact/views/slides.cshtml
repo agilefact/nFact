@@ -1,0 +1,55 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<nFact.viewModels.SlidesViewModel>
+
+<html>
+    <!DOCTYPE html>
+    <head lang="en">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Slides</title>
+        <link href="/assets/css/slides/style.css" rel="stylesheet">
+        <link href="/assets/css/slides/jcarousel.basic.css" rel="stylesheet">
+
+        <script src="/assets/js/slides/jquery.js" type="text/javascript"></script>
+    
+        <script src="/assets/js/slides/jquery.jcarousel.min.js" type="text/javascript"></script>
+        <script src="/assets/js/slides/jcarousel.basic.js" type="text/javascript"></script>
+        
+        
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="jcarousel-wrapper">
+                <div class="jcarousel">
+                    <ul>
+                        @foreach(var image in Model.Images)
+                        {
+                        <li><img src="/@image" width="1040" height="800" alt=""></li>
+                        }
+                    </ul>
+                </div>
+                
+                <a href="#" class="jcarousel-control-prev" style="top:-50px">&lsaquo;</a>
+                <a href="#" class="jcarousel-control-next" style="top:-50px">&rsaquo;</a>
+
+                <a href="#" class="jcarousel-control-prev" style="bottom:-50px">&lsaquo;</a>
+                <a href="#" class="jcarousel-control-next" style="bottom:-50px">&rsaquo;</a>
+                
+                <p class="jcarousel-pagination" style="left: 50px;top:-55px">
+                </p>
+
+                <p class="jcarousel-pagination" style="left: 50px;bottom:-55px">
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

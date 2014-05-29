@@ -1,0 +1,21 @@
+﻿@using System.Collections
+@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<nFact.viewModels.RunnerViewModel>
+@{
+    Layout = "views/SiteLayout.cshtml";
+}
+
+@section ExtraHeaders{
+    <script src="/assets/js/vm_runner.js"></script>
+}
+<div>
+    <button class="btn btn-danger" data-bind="click: stop" >Stop</button>
+</div>
+<div class="info" style="margin-bottom: 10px">
+    <label>Running script: </label>
+    <label>@Model.Script</label>
+    <br/>
+</div>
+<div id="divMessages" class="ok">
+</div>
+<div id="divError" class="error">
+</div>
