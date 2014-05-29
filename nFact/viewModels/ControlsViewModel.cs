@@ -23,13 +23,14 @@
 
         public bool HideControlsVisible { get; set; }
         public bool ControlsVisible { get; set; }
-        public int PageMax { get; set; }
+        public int Max { get; set; }
+        public int Min { get; set; }
         public int PageMin { get; set; }
+        public int PageMax { get; set; }
         public int PageCurrent { get; set; }
         public int NumOfPages { get; set; }
-        public bool PageMaxVisible { get; set; }
-        public bool PageMinVisible { get; set; }
-        public int MaxTest { get; set; }
+        public bool NextVisible { get; set; }
+        public bool PrevVisible { get; set; }
         public string Spec { get { return _dataModel.selectedSpec; } }
 
         public ControlsViewModel(PageDataModel dataModel)
@@ -39,31 +40,35 @@
             NumOfPages = 5;
         }
 
-        public void SetTestRunPagenation(int current, int max)
+        public void SetTestRunPagenation(int min, int current, int max)
         {
-            MaxTest = max;
-            PageMinVisible = true;
-            PageMaxVisible = true;
+            Max = max;
+            Min = min;
 
-            if ((current - NumOfPages) <= 0)
+            if (current - NumOfPages < min)
             {
-                PageMin = 1;
-                PageMax = NumOfPages;
-                PageMinVisible = false;
+                PageMin = min;
+                PageMax = min + NumOfPages - 1;
             }
 
             if ((current + NumOfPages) > max)
             {
                 PageMin = max - NumOfPages + 1;
                 PageMax = max;
-                PageMaxVisible = false;
             }
+
+            if (min < PageMin)
+                PrevVisible = true;
+
+            if (max > PageMax)
+                NextVisible = true;
+
 
             if (PageMax > max)
                 PageMax = max;
 
-            if (PageMin < 1)
-                PageMin = 1;
+            if (PageMin < min)
+                PageMin = min;
 
             PageCurrent = current;
         }

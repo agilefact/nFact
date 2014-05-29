@@ -60,9 +60,9 @@
                 </div>
                 <div class="col-md-6">
                     <ul class="pagination" style="margin: 0px;">
-                        @if (Model.PageMinVisible)
+                        @if (Model.PrevVisible)
                         {
-                            var href = string.Format("/{0}/{1}", Model.Spec, 1);
+                            var href = string.Format("/{0}/{1}", Model.Spec, Model.PageMin - 1);
                             <li><a href="@href" style="padding-top: 2; padding-bottom: 2">&laquo;</a></li>
                         }
                        
@@ -79,9 +79,9 @@
                             }
                         }
 
-                        @if (Model.PageMaxVisible)
+                        @if (Model.NextVisible)
                         {
-                            var href = string.Format("/{0}/{1}", Model.Spec, Model.MaxTest);
+                            var href = string.Format("/{0}/{1}", Model.Spec, Model.PageMax + 1);
                             <li><a href="@href" style="padding-top: 2; padding-bottom: 2">&raquo;</a></li>
                         }
                     </ul>

@@ -15,7 +15,7 @@ namespace nFact.modules
         {
             Get["/"] = p => View["index", BuildViewModel(null, null)];
             Get["/{spec}"] = p => View["index", BuildViewModel(p.spec, null)];
-            Get["/{spec}/{test}"] = p => View["index", BuildViewModel(p.spec, p.test)];
+            Get["/{spec}/{test}"] = p => View["index", BuildViewModel(p.spec, p.test, true)];
             Get["/{spec}/{test}/artifacts/{file}"] = p => GetFile(p.spec, p.test, p.file);
             Post["/settings"] = p => SaveSettings();
         }
@@ -37,7 +37,7 @@ namespace nFact.modules
             return response.AsAttachment(file);
         }
 
-        private IndexViewModel BuildViewModel(string spec, string test)
+        private IndexViewModel BuildViewModel(string spec, string test, bool showControls = false)
         {
             var dataModel = PageDataModelBuilder.Build(spec);
             var viewModel = new IndexViewModel(dataModel);
@@ -51,6 +51,8 @@ namespace nFact.modules
                 return viewModel; // no results available
 
             viewModel.RenderReport(artifacts);
+            viewModel.Controls.ControlsVisible = showControls;
+
             return viewModel;
         }
 
