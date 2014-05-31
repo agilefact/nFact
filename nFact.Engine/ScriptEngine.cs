@@ -135,28 +135,11 @@ namespace nFact.Engine
 
         private void CreateArtifacts(IScript model)
         {
-            var spec = model.Spec;
-
-            var version = GetProjectDllVersion(spec);
-            _artifacts = _specManager.CreateArtifacts(spec, version);
+            _artifacts = _specManager.CreateArtifacts(model);
 
             int maxVersions = 0;
             int.TryParse(ConfigurationManager.AppSettings["MaxArtifacts"], out maxVersions);
             _artifacts.DeleteExpiredArtifacts(maxVersions);
-        }
-
-        private static string GetProjectDllVersion(string spec)
-        {
-            var binPath = Path.Combine(Environment.CurrentDirectory, "projects");
-            binPath = Path.Combine(binPath, spec);
-            var defaultBinPath = ConfigurationManager.AppSettings["DefaultProjectBinPath"];
-            binPath = Path.Combine(binPath, defaultBinPath);
-            binPath = Path.Combine(binPath, string.Format("{0}.dll", spec));
-            var projectAssembly = Assembly.LoadFile(binPath);
-
-            var assemblyName = projectAssembly.GetName();
-            var version = assemblyName.Version.ToString();
-            return version;
         }
 
         public ScriptMessage GetMessage()

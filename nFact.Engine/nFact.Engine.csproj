@@ -61,7 +61,7 @@
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptEngine.cs" />
     <Compile Include="SpecManager.cs" />
-    <Compile Include="StoryResult.cs" />
+    <Compile Include="Model\StoryResult.cs" />
     <Compile Include="TestResultsManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -33,7 +33,7 @@ namespace nFact.Engine.Model
             ScenarioWMVFiles = new string[0];
         }
 
-        public static ProjectArtifacts Create(Project project, int testRun, string version)
+        public static ProjectArtifacts Create(Project project, string environment, string version, int testRun)
         {
             return new ProjectArtifacts
                        {

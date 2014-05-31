@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Linq;
 
-namespace nFact.Engine
+namespace nFact.Engine.Model
 {
     public enum Result { Pending, Success, Failure }
 

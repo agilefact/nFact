@@ -15,9 +15,9 @@ namespace nFact.Engine.Model
             Artifacts = new List<ProjectArtifacts>();
         }
 
-        public ProjectArtifacts CreateArtifacts(string version)
+        public ProjectArtifacts CreateArtifacts(string environment, string version)
         {
-            var artifacts = ProjectArtifacts.Create(this, TestRuns, version);
+            var artifacts = ProjectArtifacts.Create(this, environment, version, TestRuns);
 
             Artifacts.Add(artifacts);
             return artifacts;

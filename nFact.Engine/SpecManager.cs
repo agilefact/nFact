@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using nFact.Engine.Model;
 
@@ -10,8 +12,10 @@ namespace nFact.Engine
     public class SpecManager
     {
         private readonly ProjectsModel _dataModel = new ProjectsModel();
-        
-        internal SpecManager(){}
+
+        internal SpecManager()
+        {
+        }
 
         public void Init()
         {
@@ -107,7 +111,7 @@ namespace nFact.Engine
                     xArtifacts.Add(new XAttribute("TestRun", artifacts.TestRun));
                     if (artifacts.Version != null)
                         xArtifacts.Add(new XAttribute("Version", artifacts.Version));
-                    
+
                     if (artifacts.NUnitResultTxtFile != null)
                         xArtifacts.Add(new XAttribute("ResultTxtFile", artifacts.NUnitResultTxtFile));
 
@@ -133,12 +137,15 @@ namespace nFact.Engine
             data.Save(Path.Combine(Environment.CurrentDirectory, "projects.xml"));
         }
 
-        public ProjectArtifacts CreateArtifacts(string projectSpecName, string version)
+        public ProjectArtifacts CreateArtifacts(IScript script)
         {
-            var project = GetProject(projectSpecName);
+            var spec = script.Spec;
+            var version = GetProjectDllVersion(spec);
+            var project = GetProject(spec);
             project.TestRuns++;
-            var artifacts =  project.CreateArtifacts(version);
-            
+            var environment = script.Environment;
+            var artifacts = project.CreateArtifacts(environment, version);
+
             return artifacts;
         }
 
@@ -167,6 +174,20 @@ namespace nFact.Engine
 
             var project = projects[projectSpecName];
             return project;
+        }
+
+        internal static string GetProjectDllVersion(string spec)
+        {
+            var binPath = Path.Combine(Environment.CurrentDirectory, "projects");
+            binPath = Path.Combine(binPath, spec);
+            var defaultBinPath = ConfigurationManager.AppSettings["DefaultProjectBinPath"];
+            binPath = Path.Combine(binPath, defaultBinPath);
+            binPath = Path.Combine(binPath, string.Format("{0}.dll", spec));
+            var projectAssembly = Assembly.LoadFile(binPath);
+
+            var assemblyName = projectAssembly.GetName();
+            var version = assemblyName.Version.ToString();
+            return version;
         }
     }
 }

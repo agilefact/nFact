@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using NUnit.Framework;
+using nFact.Engine.Model;
 
 namespace nFact.Engine.Test
 {
