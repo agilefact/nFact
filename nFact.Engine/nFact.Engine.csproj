@@ -57,6 +57,7 @@
     <Compile Include="Model\ProjectArtifacts.cs" />
     <Compile Include="Model\ProjectsModel.cs" />
     <Compile Include="Model\ScriptEngineModel.cs" />
+    <Compile Include="Model\TestEnvironment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptEngine.cs" />

@@ -9,6 +9,7 @@ namespace nFact.Engine.Model
     {
         public Project Project { get; internal set; }
         public string ProjectName { get; set; }
+        public string TestEnvironment { get; internal set; }
         public DateTime Date { get; set; }
         public int TestRun { get; set; }
         public string Version { get; set; }
@@ -38,7 +39,8 @@ namespace nFact.Engine.Model
             return new ProjectArtifacts
                        {
                            Project = project,
-                           ProjectName = project.Name, 
+                           ProjectName = project.Name,
+                           TestEnvironment = environment,
                            Date = DateTime.Now, 
                            TestRun = testRun,
                            Version = version

@@ -57,8 +57,14 @@ namespace nFact.Engine
         void OnScriptComplete(object sender, EventArgs e)
         {
             ScriptLogger.Close();
+
+            var project = _artifacts.Project;
+            var environment = _artifacts.TestEnvironment;
+            project.AddTestResults(environment, _artifacts);
+
             _artifacts.CheckFiles();
             _specManager.SaveArtifacts();
+
             _scriptRunning = false;
         }
 
