@@ -8,9 +8,11 @@
 		@selectedEnvironment = ko.observable()
 		@navigate = ko.observable()
 		@isVisible = ko.observable(false)
+		@restarting = ko.observable(false)
 		@run = ->
 			this.navigateEnvironment('run')
 		@restart = ->
+			this.restarting(true);
 			context = Singleton.get()
 			url = "/" + this.selectedSpec() + "/restart"
 			$.ajax(

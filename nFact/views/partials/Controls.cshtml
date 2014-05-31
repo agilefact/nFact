@@ -36,7 +36,8 @@
                     </div>
                 </div>
                 <div class="col-md-2" >
-                        <p class="navbar-right" ><a href="#" data-bind="click: restart" class="navbar-link">Restart</a></p>
+                        <p class="navbar-right" data-bind="visible: !restarting()"><a href="#" data-bind="click: restart" class="navbar-link">Restart</a></p>
+                        <p class="navbar-right" data-bind="visible: restarting()">Restarting...</p>
                 </div>
             </div>
             
