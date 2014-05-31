@@ -1,4 +1,6 @@
-﻿Feature: Customer Transfer's Fund
+﻿@rally{12345}
+
+Feature: Customer Transfer's Fund
        As a customer
        I want to transfer funds
        so that I can send money to my friends and family

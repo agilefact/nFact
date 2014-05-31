@@ -139,6 +139,10 @@ namespace nFact.Engine
 
             var version = GetProjectDllVersion(spec);
             _artifacts = _specManager.CreateArtifacts(spec, version);
+
+            int maxVersions = 0;
+            int.TryParse(ConfigurationManager.AppSettings["MaxArtifacts"], out maxVersions);
+            _artifacts.DeleteExpiredArtifacts(maxVersions);
         }
 
         private static string GetProjectDllVersion(string spec)

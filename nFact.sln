@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nFact.Media", "nFact.Media\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceTests", "AcceptanceTests\AcceptanceTests.csproj", "{164318A5-4108-4D53-94F6-33F743D4B7C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nFact.Engine.Test", "nFact.Engine.Test\nFact.Engine.Test.csproj", "{4DD082A7-DFCB-4930-BC00-635091D3FB4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,16 @@ Global
 		{164318A5-4108-4D53-94F6-33F743D4B7C9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{164318A5-4108-4D53-94F6-33F743D4B7C9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{164318A5-4108-4D53-94F6-33F743D4B7C9}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
