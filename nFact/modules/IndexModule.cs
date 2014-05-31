@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
+using nFact.Engine;
 using nFact.controllers;
 using nFact.viewModels;
 
@@ -13,11 +15,20 @@ namespace nFact.modules
 
         public IndexModule()
         {
-            Get["/"] = p => View["index", BuildViewModel(null, null)];
-            Get["/{spec}"] = p => View["index", BuildViewModel(p.spec, null)];
-            Get["/{spec}/{test}"] = p => View["index", BuildViewModel(p.spec, p.test, true)];
+            Get["/"] = p => GetResults(null, null);
+            Get["/{spec}"] = p => GetResults(p.spec, null);
+            Get["/{spec}/{test}"] = p => GetResults(p.spec, p.test, true);
             Get["/{spec}/{test}/artifacts/{file}"] = p => GetFile(p.spec, p.test, p.file);
             Post["/settings"] = p => SaveSettings();
+        }
+
+        private dynamic GetResults(string spec, string test, bool showControls = false)
+        {
+            string format = Request.Query.format;
+            if (format != null)
+                return GetAllResults(spec, test, format);
+
+            return View["index", BuildViewModel(spec, null)];
         }
 
         private dynamic GetFile(string spec, string test, string file)
@@ -39,6 +50,7 @@ namespace nFact.modules
 
         private IndexViewModel BuildViewModel(string spec, string test, bool showControls = false)
         {
+
             var dataModel = PageDataModelBuilder.Build(spec);
             var viewModel = new IndexViewModel(dataModel);
 
@@ -54,6 +66,17 @@ namespace nFact.modules
             viewModel.Controls.ControlsVisible = showControls;
 
             return viewModel;
+        }
+
+        private dynamic GetAllResults(string spec, string test, string format)
+        {
+            var artifacts = _controller.GetArtifacts(spec, test);
+            var stories = TestResultsManager.GetRallyStoryResults(artifacts);
+
+            if (format.Equals("json", StringComparison.CurrentCultureIgnoreCase))
+                return Response.AsJson(stories);
+
+            return HttpStatusCode.BadRequest;
         }
 
         private dynamic SaveSettings()

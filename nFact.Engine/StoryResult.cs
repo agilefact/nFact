@@ -12,7 +12,7 @@ namespace nFact.Engine
         public Result Result { get; private set; }
         public bool Executed { get; private set; }
         public bool Success { get; private set; }
-        public TimeSpan Time { get; private set; }
+        public double Seconds { get; private set; }
         public int Asserts { get; private set; }
         public string Id { get; private set; }
 
@@ -38,7 +38,7 @@ namespace nFact.Engine
 
             double secs;
             double.TryParse(GetValue(xml, "time"), out secs);  
-            s.Time = TimeSpan.FromSeconds(secs);
+            s.Seconds = secs;
 
             int.TryParse(GetValue(xml, "asserts"), out i);
             s.Asserts = i;
