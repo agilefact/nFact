@@ -177,11 +177,11 @@ namespace nFact.SpecFlow
             if (!File.Exists(filePath))
                 return;
 
-            var artifactsVersion = string.Format("{0}_{1}", _properties.SpecName, _properties.TestRun);
+            var artifactsVersion = string.Format("TestRun_{0}", _properties.TestRun);
             var html =
                 string.Format(
-                    "<a href=\"#\" onclick=\"window.open('/assets/videoPlayer.html?file={0}&artifacts={1}','targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=1000,height=800')\">[video]</a>",
-                    fileName, artifactsVersion);
+                    "<a href=\"#\" onclick=\"window.open('/assets/videoPlayer.html?file={0}&project={1}&artifacts={2}','targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=1000,height=800')\">[video]</a>",
+                    fileName, _properties.SpecName, artifactsVersion);
             var link = HtmlNode.CreateNode(html);
             var space = HtmlNode.CreateNode("&nbsp;&nbsp;");
             node.ParentNode.AppendChild(space);

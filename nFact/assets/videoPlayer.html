@@ -25,7 +25,8 @@
             var file = getURLParameter('file');
             var host = window.location.host;
             var artifacts = getURLParameter('artifacts');
-            var videoAddress = 'http://' + host + '/artifacts/' + artifacts + '/' + file;
+            var project = getURLParameter('project');
+            var videoAddress = 'http://' + host + '/artifacts/' + '/' + project + '/' + artifacts + '/' + file;
             $('#media_src').attr("src", videoAddress);
         }
 

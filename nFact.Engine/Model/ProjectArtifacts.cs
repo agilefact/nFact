@@ -12,18 +12,15 @@ namespace nFact.Engine.Model
         public DateTime Date { get; set; }
         public int TestRun { get; set; }
         public string Version { get; set; }
-        public string ArtifactsVersion { get { return string.Format("{0}_{1}", ProjectName, TestRun); } }
-        public string FilePath
+        public string ArtifactsVersion { get { return string.Format("TestRun_{0}", TestRun); } }
+        public string FilePath { get { return Path.Combine(ArtifactsDirectory, ArtifactsVersion); } }
+        public string ArtifactsDirectory { get
         {
-            get
-            {
-                var path = string.Format(@"Artifacts\{0}", ArtifactsVersion);
-                return Path.Combine(Environment.CurrentDirectory, path);
-            }
+            string path = Path.Combine(Environment.CurrentDirectory, "Artifacts");
+            return Path.Combine(path, ProjectName);
         }
-
-        public string RelativeUrl { get { return string.Format("Artifacts/{0}", ArtifactsVersion); } }
-
+        }
+        public string RelativeUrl { get { return string.Format("Artifacts/{0}/{1}", ProjectName, ArtifactsVersion); } }
         public string NUnitResultTxtFile { get; set; }
         public string NUnitResultXmlFile { get; set; }
         public string SpecFlowResultFile { get; set; }
@@ -45,6 +42,14 @@ namespace nFact.Engine.Model
                            TestRun = testRun,
                            Version = version
                        };
+        }
+
+        public void DeleteExpiredArtifacts(int maxArtifacts)
+        {
+            if (maxArtifacts == 0)
+                return;
+
+
         }
 
         public string[] GetSlidesRelativeUrl(string scenario)
