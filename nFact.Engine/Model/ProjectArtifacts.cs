@@ -7,9 +7,10 @@ namespace nFact.Engine.Model
 {
     public class ProjectArtifacts : IArtifacts
     {
-        public Project Project { get; internal set; }
-        public string ProjectName { get; set; }
-        public string TestEnvironment { get; internal set; }
+        public Project Project { get { return TestEnvironment.Project;   } }
+        public string ProjectName { get { return Project.Name; } }
+        public TestEnvironment TestEnvironment { get; private set; }
+        public StoryResult[] StoryResults { get { return GetStoryResults(); } }
         public DateTime Date { get; set; }
         public int TestRun { get; set; }
         public string Version { get; set; }
@@ -28,19 +29,17 @@ namespace nFact.Engine.Model
         public string SpecFlowResultFile { get; set; }
         public string[] ScenarioWMVFiles { get; set; }
 
-        public ProjectArtifacts()
+        public ProjectArtifacts(TestEnvironment environment)
         {
+            TestEnvironment = environment;
             Version = string.Empty;
             ScenarioWMVFiles = new string[0];
         }
-
-        public static ProjectArtifacts Create(Project project, string environment, string version, int testRun)
+        
+        public static ProjectArtifacts Create(TestEnvironment environment, string version, int testRun)
         {
-            return new ProjectArtifacts
+            return new ProjectArtifacts(environment)
                        {
-                           Project = project,
-                           ProjectName = project.Name,
-                           TestEnvironment = environment,
                            Date = DateTime.Now, 
                            TestRun = testRun,
                            Version = version
@@ -50,6 +49,9 @@ namespace nFact.Engine.Model
         public void DeleteExpiredArtifacts(int maxVersions)
         {
             if (maxVersions == 0)
+                return;
+            
+            if (!Directory.Exists(ArtifactsDirectory))
                 return;
 
             var directories = Directory.GetDirectories(ArtifactsDirectory);
@@ -104,6 +106,17 @@ namespace nFact.Engine.Model
         public void Delete()
         {
             Directory.Delete(FilePath, true);
+        }
+
+        public StoryResult[] GetStoryResults()
+        {
+            var filePath = Path.Combine(FilePath, NUnitResultXmlFile);
+            return TestResultsManager.GetStoryResults(filePath);
+        }
+
+        public void RecordTestComplete()
+        {
+            TestEnvironment.AddArtifacts(this);
         }
     }
 }

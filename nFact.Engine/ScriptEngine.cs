@@ -58,11 +58,8 @@ namespace nFact.Engine
         {
             ScriptLogger.Close();
 
-            var project = _artifacts.Project;
-            var environment = _artifacts.TestEnvironment;
-            project.AddTestResults(environment, _artifacts);
-
             _artifacts.CheckFiles();
+            _artifacts.RecordTestComplete();
             _specManager.SaveArtifacts();
 
             _scriptRunning = false;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace nFact.Engine.Model
 {
@@ -7,38 +8,39 @@ namespace nFact.Engine.Model
         public string Name { get; private set; }
         public int TestRuns { get; internal set; }
 
-        public List<ProjectArtifacts> Artifacts { get; internal set; }
+        public ProjectArtifacts[] Artifacts { get { return GetOrderedArtifacts(); } }
         public Dictionary<string, TestEnvironment> TestEnvironments { get; internal set; }
 
         public Project(string name)
         {
             Name = name;
-            Artifacts = new List<ProjectArtifacts>();
             TestEnvironments = new Dictionary<string, TestEnvironment>();
+        }
+
+        public ProjectArtifacts[] GetOrderedArtifacts()
+        {
+            var orderedArtifacts = from a in TestEnvironments.Values.SelectMany(a => a.Artifacts)
+                                   orderby a.Date
+                                   select a;
+
+
+            return orderedArtifacts.ToArray();
         }
 
         public ProjectArtifacts CreateArtifacts(string environment, string version)
         {
-            var artifacts = ProjectArtifacts.Create(this, environment, version, TestRuns);
-
-            Artifacts.Add(artifacts);
-            return artifacts;
-        }
-
-        public void AddTestResults(string environment, ProjectArtifacts artifacts)
-        {
             TestEnvironment testEnvironment;
             if (!TestEnvironments.ContainsKey(environment))
             {
-                testEnvironment = new TestEnvironment(environment);
+                testEnvironment = new TestEnvironment(environment, this);
                 TestEnvironments.Add(environment, testEnvironment);
             }
             else
             {
-                testEnvironment = TestEnvironments[environment];
+                testEnvironment = TestEnvironments[environment]; 
             }
 
-            testEnvironment.AddTestResults(artifacts);
+            return ProjectArtifacts.Create(testEnvironment, version, TestRuns);
         }
     }
 }

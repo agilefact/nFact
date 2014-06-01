@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Projects>
+  <Project Name="SpecTests" TestRuns="6">
+    <TestEnvironments>
+      <TestEnvironment Name="local" TestRuns="3">
+        <Artifacts Date="20140601" Time="140432" TestRun="1"/>
+        <Artifacts Date="20140602" Time="140432" TestRun="2"/>
+        <Artifacts Date="20140603" Time="140432" TestRun="3"/>
+      </TestEnvironment>
+      <TestEnvironment Name="uat" TestRuns="3">
+        <Artifacts Date="20140601" Time="150432" TestRun="1"/>
+        <Artifacts Date="20140602" Time="150432" TestRun="2"/>
+        <Artifacts Date="20140603" Time="150432" TestRun="3"/>
+      </TestEnvironment>
+    </TestEnvironments>
+  </Project>
+</Projects>

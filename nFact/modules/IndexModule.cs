@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
@@ -26,7 +28,7 @@ namespace nFact.modules
         {
             string format = Request.Query.format;
             if (format != null)
-                return GetAllResults(spec, test, format);
+                return GetAllResults(spec, format);
 
             return View["index", BuildViewModel(spec, null)];
         }
@@ -68,13 +70,44 @@ namespace nFact.modules
             return viewModel;
         }
 
-        private dynamic GetAllResults(string spec, string test, string format)
+        private dynamic GetAllResults(string spec, string format)
         {
-            var artifacts = _controller.GetArtifacts(spec, test);
-            var stories = TestResultsManager.GetRallyStoryResults(artifacts);
+            var project = _controller.GetProject(spec);
+            if (project == null)
+                throw new ApplicationException(string.Format("Could not find project '{0}'", spec));
 
+            var result = new Project {Name = project.Name};
+            var environments = new List<Environment>();
+            foreach (var e in project.TestEnvironments.Values)
+            {
+                var environment = new Environment {Name = e.Name};
+                var allStoryResults = new List<StoryResult>();
+                foreach (var a in e.Artifacts)
+                {
+                    var storyResults = a.GetStoryResults();
+                    foreach (var r in storyResults)
+                    {
+                        var sr = new StoryResult
+                                     {
+                                         Description = r.Description,
+                                         DurationSecs = r.Seconds,
+                                         Id = r.Id,
+                                         Name = r.Name,
+                                         Result = r.Result.ToString(),
+                                         TestRun = a.TestRun,
+                                         TestTime = a.Date,
+                                         TestVersion = a.Version
+                                     };
+                        allStoryResults.Add(sr);
+                    }
+                }
+                environment.StoryResults = allStoryResults.ToArray();
+                environments.Add(environment);
+            }
+            result.Environments = environments.ToArray();
+            
             if (format.Equals("json", StringComparison.CurrentCultureIgnoreCase))
-                return Response.AsJson(stories);
+                return Response.AsJson(result);
 
             return HttpStatusCode.BadRequest;
         }
@@ -86,5 +119,29 @@ namespace nFact.modules
 
             return HttpStatusCode.OK;
         }
+    }
+
+    public class Project
+    {
+        public string Name;
+        public Environment[] Environments;
+    }
+
+    public class Environment
+    {
+        public string Name;
+        public StoryResult[] StoryResults;
+    }
+
+    public class StoryResult
+    {
+        public int TestRun;
+        public DateTime TestTime;
+        public string TestVersion;
+        public string Name;
+        public string Description;
+        public string Result;
+        public double DurationSecs;
+        public string Id;
     }
 }

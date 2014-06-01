@@ -28,7 +28,7 @@ namespace nFact.Engine.Test
         public void GetFailedStoryResults()
         {
             var file = Path.Combine(Environment.CurrentDirectory, "TestResult2.xml");
-            var stories = TestResultsManager.GetRallyStoryResults(file);
+            var stories = TestResultsManager.GetStoryResults(file);
             var story = stories[1];
             Assert.AreEqual(Result.Failure, story.Result);
             Assert.AreEqual(false, story.Success);
@@ -38,7 +38,7 @@ namespace nFact.Engine.Test
         public void GetPendingResults()
         {
             var file = Path.Combine(Environment.CurrentDirectory, "TestResult3.xml");
-            var stories = TestResultsManager.GetRallyStoryResults(file);
+            var stories = TestResultsManager.GetStoryResults(file);
             var story = stories[1];
             Assert.AreEqual(Result.Pending, story.Result);
             Assert.AreEqual(false, story.Success);

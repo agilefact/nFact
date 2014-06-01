@@ -12,13 +12,7 @@ namespace nFact.Engine
 {
     public class TestResultsManager
     {
-        public static StoryResult[] GetRallyStoryResults(ProjectArtifacts artifacts)
-        {
-            var filePath = Path.Combine(artifacts.FilePath, artifacts.NUnitResultXmlFile);
-            return GetRallyStoryResults(filePath);
-        }
-
-        public static StoryResult[] GetRallyStoryResults(string file)
+        public static StoryResult[] GetStoryResults(string file)
         {
             var resultsXml = XElement.Load(file);
             var results = new List<StoryResult>();
@@ -47,9 +41,10 @@ namespace nFact.Engine
 
             return results.ToArray();
         }
+
         public static StoryResult GetRallyStoryResult(string rallyId, string file)
         {
-            var results = GetRallyStoryResults(file);
+            var results = GetStoryResults(file);
             return results.FirstOrDefault(r => r.Id.Equals(rallyId, StringComparison.InvariantCultureIgnoreCase));
         }
 

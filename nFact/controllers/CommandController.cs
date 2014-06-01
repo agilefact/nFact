@@ -73,7 +73,17 @@ namespace nFact.controllers
                 var testRun = int.Parse(test);
                 return _specManager.GetArtifacts(spec, testRun);
             }
-            return _specManager.GetArtifacts(spec);
+            return _specManager.GetLatestArtifacts(spec);
+        }
+
+        public ProjectArtifacts[] GetArtifacts(string spec)
+        {
+            return _specManager.GetAllArtifacts(spec);
+        }
+
+        public Project GetProject(string spec)
+        {
+            return _specManager.GetProject(spec);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace nFact.modules
             var msg = ScriptEngine.Instance.GetMessage();
 
             var output = new RunnerOutput();
-            output.Message = msg.Message.Replace(Environment.NewLine, "<BR/>");
+            output.Message = msg.Message.Replace(System.Environment.NewLine, "<BR/>");
             output.State = msg.State.ToString();
             return Response.AsJson(output);
         }

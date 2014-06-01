@@ -1,4 +1,6 @@
-﻿namespace nFact.viewModels
+﻿using System.Configuration;
+
+namespace nFact.viewModels
 {
     public class ControlsViewModel
     {
@@ -37,7 +39,13 @@
         {
             _dataModel = dataModel;
             ControlsVisible = true;
-            NumOfPages = 5;
+            var numOfPages = 5;
+            var page = ConfigurationManager.AppSettings["ArtifactsPagination"];
+            if (page != null)
+            {
+                int.TryParse(page, out numOfPages);
+            }
+            NumOfPages = numOfPages;
         }
 
         public void SetTestRunPagenation(int min, int current, int max)

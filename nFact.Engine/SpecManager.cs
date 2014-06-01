@@ -19,7 +19,17 @@ namespace nFact.Engine
 
         public void Init()
         {
-            LoadArtifacts();
+            SpecStore.LoadArtifacts(_dataModel);
+        }
+
+        public void LoadArtifacts(string file)
+        {
+            SpecStore.LoadArtifacts(file, _dataModel);
+        }
+
+        public void SaveArtifacts()
+        {
+            SpecStore.SaveArtifacts(_dataModel);
         }
 
         public void SetCurrentProject(string spec)
@@ -42,106 +52,14 @@ namespace nFact.Engine
             return dirs.Select(d => new DirectoryInfo(d).Name).ToArray();
         }
 
-        public void LoadArtifacts()
-        {
-            var artifactsFile = Path.Combine(Environment.CurrentDirectory, "projects.xml");
-            if (!File.Exists(artifactsFile))
-                return;
-
-            var data = XElement.Load(artifactsFile);
-            var projects = (from p in data.Descendants("Project")
-                            let artifacts = from a in p.Descendants("Artifacts")
-                                            select ProjectArtifacts(p.Attribute("Name").Value, a)
-                            select new Project(p.Attribute("Name").Value)
-                                       {
-                                           TestRuns = int.Parse(p.Attribute("TestRuns").Value),
-                                           Artifacts = artifacts.ToList()
-                                       }).ToArray();
-
-            foreach (var project in projects)
-            {
-                foreach (var artifact in project.Artifacts)
-                {
-                    artifact.Project = project;
-                }
-            }
-
-            _dataModel.Projects = projects.ToDictionary(p => p.Name, p => p);
-        }
-
-        private static ProjectArtifacts ProjectArtifacts(string project, XElement a)
-        {
-            var resultTxt = a.Attribute("ResultTxtFile");
-            var resultXml = a.Attribute("ResultXmlFile");
-            var resultHtml = a.Attribute("ResultHtmlFile");
-            var date = GetValue(a, "Date");
-            var testRun = GetValue(a, "TestRun");
-            var version = GetValue(a, "Version");
-            return new ProjectArtifacts
-                       {
-                           Date = DateTime.ParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture),
-                           TestRun = int.Parse(testRun),
-                           Version = version,
-                           ProjectName = project,
-                           NUnitResultTxtFile = resultTxt == null ? string.Empty : resultTxt.Value,
-                           NUnitResultXmlFile = resultXml == null ? string.Empty : resultXml.Value,
-                           SpecFlowResultFile = resultHtml == null ? string.Empty : resultHtml.Value
-                       };
-        }
-
-        public static string GetValue(XElement a, string name)
-        {
-            var atrribute = a.Attribute(name);
-            return atrribute == null ? null : atrribute.Value;
-        }
-
-        public void SaveArtifacts()
-        {
-            var data = new XElement("Projects");
-            foreach (var project in _dataModel.Projects.Values)
-            {
-                var xProject = new XElement("Project");
-                xProject.Add(new XAttribute("Name", project.Name));
-                xProject.Add(new XAttribute("TestRuns", project.TestRuns));
-
-                foreach (var artifacts in project.Artifacts)
-                {
-                    var xArtifacts = new XElement("Artifacts");
-                    xArtifacts.Add(new XAttribute("Date", artifacts.Date.Date.ToString("yyyyMMdd")));
-                    xArtifacts.Add(new XAttribute("TestRun", artifacts.TestRun));
-                    if (artifacts.Version != null)
-                        xArtifacts.Add(new XAttribute("Version", artifacts.Version));
-
-                    if (artifacts.NUnitResultTxtFile != null)
-                        xArtifacts.Add(new XAttribute("ResultTxtFile", artifacts.NUnitResultTxtFile));
-
-                    if (artifacts.NUnitResultXmlFile != null)
-                        xArtifacts.Add(new XAttribute("ResultXmlFile", artifacts.NUnitResultXmlFile));
-
-                    if (artifacts.SpecFlowResultFile != null)
-                        xArtifacts.Add(new XAttribute("ResultHtmlFile", artifacts.SpecFlowResultFile));
-
-                    foreach (string file in artifacts.ScenarioWMVFiles)
-                    {
-                        var xFile = new XElement("WmvFile");
-                        xFile.Add(new XAttribute("Name", file));
-                        xArtifacts.Add(xFile);
-                    }
-
-                    xProject.Add(xArtifacts);
-                }
-
-                data.Add(xProject);
-            }
-
-            data.Save(Path.Combine(Environment.CurrentDirectory, "projects.xml"));
-        }
-
         public ProjectArtifacts CreateArtifacts(IScript script)
         {
             var spec = script.Spec;
             var version = GetProjectDllVersion(spec);
             var project = GetProject(spec);
+            if (project == null)
+                project = CreateProject(spec);
+
             project.TestRuns++;
             var environment = script.Environment;
             var artifacts = project.CreateArtifacts(environment, version);
@@ -149,7 +67,13 @@ namespace nFact.Engine
             return artifacts;
         }
 
-        public ProjectArtifacts GetArtifacts(string projectSpecName)
+        public ProjectArtifacts[] GetAllArtifacts(string projectSpecName)
+        {
+            var project = GetProject(projectSpecName);
+            return project.Artifacts;
+        }
+
+        public ProjectArtifacts GetLatestArtifacts(string projectSpecName)
         {
             var project = GetProject(projectSpecName);
             return project.Artifacts.FirstOrDefault(p => p.TestRun == project.TestRuns);
@@ -167,13 +91,23 @@ namespace nFact.Engine
 
             if (!projects.ContainsKey(projectSpecName))
             {
-                var newProject = new Project(projectSpecName);
-                projects.Add(projectSpecName, newProject);
-                return newProject;
+                return null;
             }
 
             var project = projects[projectSpecName];
             return project;
+        }
+
+        public Project CreateProject(string projectSpecName)
+        {
+            var projects = _dataModel.Projects;
+
+            if (projects.ContainsKey(projectSpecName))
+                throw new ApplicationException(string.Format("Cannot create new project '{0}', as there already exists one with this name."));
+
+            var newProject = new Project(projectSpecName);
+            projects.Add(projectSpecName, newProject);
+            return newProject;
         }
 
         internal static string GetProjectDllVersion(string spec)
@@ -189,5 +123,46 @@ namespace nFact.Engine
             var version = assemblyName.Version.ToString();
             return version;
         }
+    }
+}
+
+public static class XElementExtension
+{
+    public static dynamic GetValue<T>(this XElement x, string name)
+    {
+        return GetValue<T>(x, name, null);
+    }
+
+    public static dynamic GetValue<T>(this XElement x, string name, string format)
+    {   
+        var attribute = x.Attribute(name);
+
+        if (typeof(T) == typeof(string))
+            return attribute == null ? null : attribute.Value;
+
+        if (typeof(T) == typeof(int))
+        {
+            var i = 0;
+            if (attribute != null)
+                int.TryParse(attribute.Value, out i);
+            return i;
+        }   
+        if (typeof(T) == typeof(DateTime) && !string.IsNullOrEmpty(format))
+        {
+            if (attribute == null)
+                return DateTime.MinValue;
+
+            return DateTime.ParseExact(attribute.Value, format, CultureInfo.InvariantCulture);
+        }
+
+        if (typeof(T) == typeof(TimeSpan) && !string.IsNullOrEmpty(format))
+        {
+            if (attribute == null)
+                return TimeSpan.MinValue;
+
+            return TimeSpan.ParseExact(attribute.Value, format, CultureInfo.InvariantCulture);
+        }
+
+        return null;
     }
 }
