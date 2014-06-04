@@ -29,7 +29,7 @@ function nunitout{
 
 # Define nunit and specflow execs
 
-$nUnitExe = join-path -path $RootPath -childpath "NUnit\nunit-console.exe"
+$nUnitExe = join-path -path $RootPath -childpath "NUnit\nunit-console-x86.exe"
 $specFlowExe = join-path -path $RootPath -childpath "SpecFlow\specflow.exe"
 $reportParserExe = join-path -path $RootPath -childpath "nFact.SpecFlow.exe"
 
