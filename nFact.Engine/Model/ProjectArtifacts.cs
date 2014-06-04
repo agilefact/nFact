@@ -74,6 +74,7 @@ namespace nFact.Engine.Model
             var files = Directory.GetFileSystemEntries(path, "*.png");
 
             var slides = from f in files
+                         orderby f
                          select string.Format("{0}/{1}", scenarioUrl, Path.GetFileName(f));
 
             return slides.ToArray();
