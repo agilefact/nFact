@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug\SpecTests.dll" total="3" errors="0" failures="0" not-run="0" inconclusive="2" ignored="0" skipped="0" invalid="0" date="2014-05-31" time="21:11:04">
+  <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.3655" os-version="Microsoft Windows NT 5.1.2600 Service Pack 3" platform="Win32NT" cwd="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug" machine-name="MICHAELSMOLB29B" user="Administrator" user-domain="MICHAELSMOLB29B" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug\SpecTests.dll" executed="True" result="Success" success="True" time="20.684" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="SpecTests" executed="True" result="Success" success="True" time="20.675" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="Features" executed="True" result="Success" success="True" time="20.672" asserts="0">
+            <results>
+              <test-suite type="TestFixture" name="CustomerTransferSFundFeature" description="Customer Transfer's Fund" executed="True" result="Success" success="True" time="20.191" asserts="0">
+                <categories>
+                  <category name="rally{12345}" />
+                </categories>
+                <results>
+                  <test-case name="SpecTests.Features.CustomerTransferSFundFeature.ValidPayee" description="Valid Payee" executed="True" result="Success" success="True" time="19.989" asserts="1" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="SpecFlowFeature1Feature" description="SpecFlowFeature1" executed="True" result="Inconclusive" success="False" time="0.385" asserts="0">
+                <categories>
+                  <category name="rally{1111}" />
+                </categories>
+                <results>
+                  <test-case name="SpecTests.Features.SpecFlowFeature1Feature.Feature1Scenario1" description="Feature 1 Scenario 1" executed="True" result="Inconclusive" success="False" time="0.362" asserts="0">
+                    <categories>
+                      <category name="mytag" />
+                    </categories>
+                    <reason>
+                      <message><![CDATA[One or more step definitions are not implemented yet.
+  SpecFlowFeature1Steps.ThenTheResultShouldBeOnTheScreen(120)]]></message>
+                    </reason>
+                  </test-case>
+                  <test-case name="SpecTests.Features.SpecFlowFeature1Feature.Feature1Scenario2" description="Feature 1 Scenario 2" executed="True" result="Inconclusive" success="False" time="0.019" asserts="0">
+                    <reason>
+                      <message><![CDATA[One or more step definitions are not implemented yet.
+  SpecFlowFeature1Steps.ThenTheResultShouldBeOnTheScreen(120)]]></message>
+                    </reason>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
