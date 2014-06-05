@@ -1,6 +1,6 @@
 using System;
 
-namespace nFact.DataTransfer.Flat
+namespace nFact.Engine.Model.DataTransfer.Flat
 {
     public class StoryResult
     {
@@ -17,7 +17,7 @@ namespace nFact.DataTransfer.Flat
     }
 }
 
-namespace nFact.DataTransfer
+namespace nFact.Engine.Model.DataTransfer
 {
     public class Project
     {

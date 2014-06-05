@@ -53,6 +53,7 @@
     <Compile Include="Configuration\TestConfigurationManagerAdmin.cs" />
     <Compile Include="IScript.cs" />
     <Compile Include="Logger\ArtifactFolderPatternConverter.cs" />
+    <Compile Include="Model\DataTransfer\Project.cs" />
     <Compile Include="Model\Project.cs" />
     <Compile Include="Model\ProjectArtifacts.cs" />
     <Compile Include="Model\ProjectsModel.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="SpecManager.cs" />
     <Compile Include="Model\StoryResult.cs" />
     <Compile Include="SpecStore.cs" />
+    <Compile Include="StoryManager.cs" />
     <Compile Include="TestResultsManager.cs" />
   </ItemGroup>
   <ItemGroup>
