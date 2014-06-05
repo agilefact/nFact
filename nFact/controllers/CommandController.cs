@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using nFact.Engine;
 using nFact.Engine.Configuration;
 using nFact.Engine.Model;
@@ -83,7 +84,12 @@ namespace nFact.controllers
 
         public Project GetProject(string spec)
         {
-            return _specManager.GetProject(spec);
+            var project =  _specManager.GetProject(spec);
+
+            if (project == null)
+                throw new ApplicationException(String.Format("Could not find project '{0}'", spec));
+
+            return project;
         }
     }
 }

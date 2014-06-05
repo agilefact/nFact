@@ -75,7 +75,7 @@ namespace nFact.modules
 
         private dynamic GetAllResults(string spec, string format)
         {
-            var result = _dtoController.GetAllResultsByProject(spec);
+            var result = _dtoController.GetProjectStoryResults(spec);
 
             if (format.Equals("json", StringComparison.CurrentCultureIgnoreCase))
                 return Response.AsJson(result);
