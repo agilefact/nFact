@@ -9,11 +9,6 @@ namespace nFact.Engine
 {
     public class SpecStore
     {
-        public static void LoadArtifacts(ProjectsModel dataModel)
-        {
-            LoadArtifacts("projects.xml", dataModel);
-        }
-
         public static void LoadArtifacts(string file, ProjectsModel dataModel)
         {
             var artifactsFile = Path.Combine(Environment.CurrentDirectory, file);

@@ -19,12 +19,27 @@ namespace nFact.Engine
 
         public void Init()
         {
-            SpecStore.LoadArtifacts(_dataModel);
+            LoadArtifacts("projects.xml");
+            MergeUnloadedProjects();
+            SaveArtifacts();
         }
 
         public void LoadArtifacts(string file)
         {
             SpecStore.LoadArtifacts(file, _dataModel);
+        }
+
+        private void MergeUnloadedProjects()
+        {
+            var specs = GetProjectSpecs();
+            foreach (var spec in specs)
+            {
+                var projectLoaded = _dataModel.Projects.Any(p => p.Key == spec);
+                if (!projectLoaded)
+                {
+                    CreateProject(spec);
+                }
+            }
         }
 
         public void SaveArtifacts()
@@ -103,7 +118,7 @@ namespace nFact.Engine
             var projects = _dataModel.Projects;
 
             if (projects.ContainsKey(projectSpecName))
-                throw new ApplicationException(string.Format("Cannot create new project '{0}', as there already exists one with this name."));
+                throw new ApplicationException(string.Format("Cannot create new project '{0}', as there already exists one with this name.", projectSpecName));
 
             var newProject = new Project(projectSpecName);
             projects.Add(projectSpecName, newProject);
