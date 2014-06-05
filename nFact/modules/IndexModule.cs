@@ -5,15 +5,18 @@ using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
+using nFact.DataTransfer;
 using nFact.Engine;
 using nFact.controllers;
 using nFact.viewModels;
+using Environment = nFact.DataTransfer.Environment;
 
 namespace nFact.modules
 {
     public class IndexModule : NancyModule
     {
         readonly CommandController _controller = new CommandController();
+        readonly DataTransferController _dtoController = new DataTransferController();
 
         public IndexModule()
         {
@@ -72,42 +75,13 @@ namespace nFact.modules
 
         private dynamic GetAllResults(string spec, string format)
         {
-            var project = _controller.GetProject(spec);
-            if (project == null)
-                throw new ApplicationException(string.Format("Could not find project '{0}'", spec));
+            var result = _dtoController.GetAllResultsByProject(spec);
 
-            var result = new Project {Name = project.Name};
-            var environments = new List<Environment>();
-            foreach (var e in project.TestEnvironments.Values)
-            {
-                var environment = new Environment {Name = e.Name};
-                var allStoryResults = new List<StoryResult>();
-                foreach (var a in e.Artifacts)
-                {
-                    var storyResults = a.GetStoryResults();
-                    foreach (var r in storyResults)
-                    {
-                        var sr = new StoryResult
-                                     {
-                                         Description = r.Description,
-                                         DurationSecs = r.Seconds,
-                                         Id = r.Id,
-                                         Name = r.Name,
-                                         Result = r.Result.ToString(),
-                                         TestRun = a.TestRun,
-                                         TestTime = a.Date,
-                                         TestVersion = a.Version
-                                     };
-                        allStoryResults.Add(sr);
-                    }
-                }
-                environment.StoryResults = allStoryResults.ToArray();
-                environments.Add(environment);
-            }
-            result.Environments = environments.ToArray();
-            
             if (format.Equals("json", StringComparison.CurrentCultureIgnoreCase))
                 return Response.AsJson(result);
+
+            if (format.Equals("xml", StringComparison.CurrentCultureIgnoreCase))
+                return Response.AsXml(result);
 
             return HttpStatusCode.BadRequest;
         }
@@ -119,29 +93,5 @@ namespace nFact.modules
 
             return HttpStatusCode.OK;
         }
-    }
-
-    public class Project
-    {
-        public string Name;
-        public Environment[] Environments;
-    }
-
-    public class Environment
-    {
-        public string Name;
-        public StoryResult[] StoryResults;
-    }
-
-    public class StoryResult
-    {
-        public int TestRun;
-        public DateTime TestTime;
-        public string TestVersion;
-        public string Name;
-        public string Description;
-        public string Result;
-        public double DurationSecs;
-        public string Id;
     }
 }

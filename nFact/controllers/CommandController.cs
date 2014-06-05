@@ -6,7 +6,7 @@ using nFact.viewModels;
 
 namespace nFact.controllers
 {
-    class CommandController
+    public class CommandController
     {
         private string[] _specs;
         private readonly SpecManager _specManager;
