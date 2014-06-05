@@ -29,6 +29,7 @@ namespace nFact.Engine.Model
 
         public ProjectArtifacts CreateArtifacts(string environment, string version)
         {
+            TestRuns++;
             TestEnvironment testEnvironment;
             if (!TestEnvironments.ContainsKey(environment))
             {

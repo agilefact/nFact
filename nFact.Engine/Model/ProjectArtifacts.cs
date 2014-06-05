@@ -24,9 +24,9 @@ namespace nFact.Engine.Model
             }
         }
         public string RelativeUrl { get { return string.Format("Artifacts/{0}/{1}", ProjectName, ArtifactsVersion); } }
-        public string NUnitResultTxtFile { get; set; }
-        public string NUnitResultXmlFile { get; set; }
-        public string SpecFlowResultFile { get; set; }
+        public string NUnitResultTxtFile = "TestResult.txt";
+        public string NUnitResultXmlFile = "TestResult.xml";
+        public string SpecFlowResultFile = "TestResult.html";
         public string[] ScenarioWMVFiles { get; set; }
 
         public ProjectArtifacts(TestEnvironment environment)
@@ -78,19 +78,6 @@ namespace nFact.Engine.Model
                          select string.Format("{0}/{1}", scenarioUrl, Path.GetFileName(f));
 
             return slides.ToArray();
-        }
-
-        public void CheckFiles()
-        {
-            var txtFile = NUnitResultTxtFile;
-            var xmlFile = NUnitResultXmlFile;
-            var htmlFile = SpecFlowResultFile;
-            CheckFile("TestResult.txt", out txtFile);
-            CheckFile("TestResult.xml", out xmlFile);
-            CheckFile("TestResult.html", out htmlFile);
-            NUnitResultTxtFile = txtFile;
-            NUnitResultXmlFile = xmlFile;
-            SpecFlowResultFile = htmlFile;
         }
 
         private void CheckFile(string fileName, out string attribute)

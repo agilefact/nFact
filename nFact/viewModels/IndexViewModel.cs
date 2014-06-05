@@ -25,11 +25,7 @@ namespace nFact.viewModels
 
             SetTestRunPagenation(artifacts.TestRun, artifacts.Project.TestRuns);
 
-            var resultFile = artifacts.SpecFlowResultFile;
-            if (resultFile == null)
-                return;
-
-            var reportPath = Path.Combine(artifacts.FilePath, resultFile);
+            var reportPath = Path.Combine(artifacts.FilePath, artifacts.SpecFlowResultFile);
             if (!File.Exists(reportPath)) 
                 return;
 

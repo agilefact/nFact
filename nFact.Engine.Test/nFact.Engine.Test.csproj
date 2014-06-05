@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandlerTest.cs" />
+    <Compile Include="StoryManagerTest.cs" />
     <Compile Include="SpecManagerTest.cs" />
     <Compile Include="TestResultsManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +71,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Artifacts\SpecTests\TestRun_1\TestResult.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="projects.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

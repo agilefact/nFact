@@ -102,7 +102,6 @@
     <Compile Include="controllers\SourceController.cs" />
     <Compile Include="modules\ConfigModule.cs" />
     <Compile Include="modules\IndexModule.cs" />
-    <Compile Include="DataTransfer\Project.cs" />
     <Compile Include="modules\RunnerModule.cs" />
     <Compile Include="modules\SlidesModule.cs" />
     <Compile Include="modules\SourceModule.cs" />

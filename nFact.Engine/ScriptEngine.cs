@@ -58,7 +58,6 @@ namespace nFact.Engine
         {
             ScriptLogger.Close();
 
-            _artifacts.CheckFiles();
             _artifacts.RecordTestComplete();
             _specManager.SaveArtifacts();
 

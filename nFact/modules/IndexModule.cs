@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
-using nFact.DataTransfer;
-using nFact.Engine;
 using nFact.controllers;
 using nFact.viewModels;
-using Environment = nFact.DataTransfer.Environment;
 
 namespace nFact.modules
 {

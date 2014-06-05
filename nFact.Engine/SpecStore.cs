@@ -64,15 +64,6 @@ namespace nFact.Engine
                         if (artifacts.Version != null)
                             xArtifacts.Add(new XAttribute("Version", artifacts.Version));
 
-                        if (artifacts.NUnitResultTxtFile != null)
-                            xArtifacts.Add(new XAttribute("ResultTxtFile", artifacts.NUnitResultTxtFile));
-
-                        if (artifacts.NUnitResultXmlFile != null)
-                            xArtifacts.Add(new XAttribute("ResultXmlFile", artifacts.NUnitResultXmlFile));
-
-                        if (artifacts.SpecFlowResultFile != null)
-                            xArtifacts.Add(new XAttribute("ResultHtmlFile", artifacts.SpecFlowResultFile));
-
                         foreach (string file in artifacts.ScenarioWMVFiles)
                         {
                             var xFile = new XElement("WmvFile");
@@ -110,10 +101,7 @@ namespace nFact.Engine
                        {
                            Date = date.Add(time),
                            TestRun = x.GetValue<int>("TestRun"),
-                           Version = x.GetValue<string>("Version"),
-                           NUnitResultTxtFile = x.GetValue<string>("ResultTxtFile"),
-                           NUnitResultXmlFile = x.GetValue<string>("ResultXmlFile"),
-                           SpecFlowResultFile = x.GetValue<string>("ResultHtmlFile")
+                           Version = x.GetValue<string>("Version")
                        };
         }
     }

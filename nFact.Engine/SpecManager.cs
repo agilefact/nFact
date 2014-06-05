@@ -75,7 +75,6 @@ namespace nFact.Engine
             if (project == null)
                 project = CreateProject(spec);
 
-            project.TestRuns++;
             var environment = script.Environment;
             var artifacts = project.CreateArtifacts(environment, version);
 
