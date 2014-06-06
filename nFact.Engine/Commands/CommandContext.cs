@@ -11,12 +11,12 @@ namespace nFact.Engine.Commands
         public IRecorder VideoRecorder { get; set; }
         public IRecorder SlidesRecorder { get; set; }
 
-        public CommandContext(ScriptEngineModel model, IScriptScenarioContext context)
+        public CommandContext(ScriptEngineModel model, IScriptScenarioContext context, Recorders recorders)
         {
             Model = model;
             ScriptContext = context;
-            VideoRecorder = new VideoRecorder();
-            SlidesRecorder = new SlidesRecorder();
+            VideoRecorder = recorders.VideoRecorder;
+            SlidesRecorder = recorders.SlidesRecorder;
         }
     }
 }

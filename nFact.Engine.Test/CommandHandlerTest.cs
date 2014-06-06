@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using nFact.Engine.Commands;
 using nFact.Engine.Model;
+using nFact.Media;
 using nFact.Shared;
 
 namespace nFact.Engine.Test
@@ -19,14 +20,17 @@ namespace nFact.Engine.Test
             
             recorder.Setup(r => r.Start(scriptContext.Object)).Verifiable();
 
-            var context = new CommandContext(scriptModel, scriptContext.Object);
-            context.VideoRecorder = recorder.Object;
+            var recorders = new Recorders();
+            recorders.VideoRecorder = recorder.Object;
+            var context = new CommandContext(scriptModel, scriptContext.Object, recorders);
 
 
             var handler = new CommandHandler(context);
 
-            handler.Parse("{Scenario.Start()}");
+            handler.Parse("{Scenario.Start(1)}");
             recorder.Verify(r => r.Start(It.IsAny<IScriptScenarioContext>()));
+
+            scriptContext.VerifySet(c => c.ScenarioCount = 1);
 
             handler.Parse("{Scenario.End()}");
             recorder.Verify(r => r.End(It.IsAny<IScriptScenarioContext>()));

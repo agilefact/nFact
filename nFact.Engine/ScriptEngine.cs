@@ -8,6 +8,7 @@ using ScriptRunner;
 using nFact.Engine.Commands;
 using nFact.Engine.Configuration;
 using nFact.Engine.Model;
+using nFact.Media;
 using nFact.Shared;
 
 namespace nFact.Engine
@@ -83,7 +84,8 @@ namespace nFact.Engine
             CreateArtifacts(model);
 
             var context = new ScriptContext(model, _artifacts);
-            var handlerContext = new CommandContext(_model, context);
+            var recorders = Recorders.Create();
+            var handlerContext = new CommandContext(_model, context, recorders);
             _commandHandler = new CommandHandler(handlerContext);
 
             log4net.Config.XmlConfigurator.Configure();
