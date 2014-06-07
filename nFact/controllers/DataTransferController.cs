@@ -10,7 +10,7 @@ namespace nFact.controllers
         {
             var project = GetProject(spec);
             var manager = new StoryManager();
-            return manager.GetStoryByEnvionment(project, storyId);
+            return manager.GetProjectStoryResults(project, storyId);
         }
 
         public Project GetProjectStoryResults(string spec)

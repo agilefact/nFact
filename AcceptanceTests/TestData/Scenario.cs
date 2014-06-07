@@ -25,21 +25,12 @@ namespace AcceptanceTests.TestData
 
         public static void TeardownData(string script)
         {
-            TeardownData(script, null);
-        }
-
-        public static void TeardownData(string script, string tag)
-        {
             try
             {
                 TestConfigurationManager.Load();
 
-                var scenarioInfo = ScenarioContext.Current.ScenarioInfo;
-                if (tag == null || scenarioInfo.Tags.Any(t => t == tag))
-                {
-                    var dbFit = new DbFitHandler();
-                    dbFit.Teardown(script);
-                }
+                var dbFit = new DbFitHandler();
+                dbFit.Teardown(script);
             }
             catch
             {

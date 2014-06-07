@@ -8,7 +8,7 @@ namespace nFact.Engine.Test
     public class StoryManagerTest
     {
         [Test]
-        public void GetStoryByEnvionmentTest()
+        public void GetProjectStoryResultsTestByStory()
         {
             var project = new Project("SpecTests");
             var a1 = project.CreateArtifacts("local", "1.0.0");
@@ -19,7 +19,7 @@ namespace nFact.Engine.Test
             a3.RecordTestComplete();
 
             var manager = new StoryManager();
-            var results = manager.GetStoryByEnvionment(project, "1111");
+            var results = manager.GetProjectStoryResults(project, "1111");
             var local = results.Environments[0];
             var uat = results.Environments[1];
             var localStory = local.Stories[0];

@@ -10,7 +10,7 @@ namespace nFact.SpecFlow
 
         private string _feature;
 
-        public Dictionary<string, List<string>> GetLinks(string path)
+        public Dictionary<string, List<string>> GetContent(string path, string tag)
         {
             using (var stream = new StreamReader(path))
             {
@@ -18,7 +18,7 @@ namespace nFact.SpecFlow
                 {
                     var line = stream.ReadLine();
                     ParseFeaureLine(line);
-                    ParseLinkLine(_feature, line);
+                    ParseTagLine(_feature, line, tag);
                 }
             }
             return _links;
@@ -41,12 +41,22 @@ namespace nFact.SpecFlow
             _feature = labels[labels.Length - 2];
         }
 
-        private void ParseLinkLine(string feature, string line)
+        public static string ParseTagLine(string line, string tag)
+        {
+            if (!line.StartsWith(tag, StringComparison.InvariantCultureIgnoreCase))
+                return null;
+
+            string link;
+            GetContents(line, '{', '}', out link);
+            return link;
+        }
+
+        private void ParseTagLine(string feature, string line, string tag)
         {
             if (feature == null)
                 return;
 
-            if (!line.StartsWith("@link", StringComparison.InvariantCultureIgnoreCase)) 
+            if (!line.StartsWith(tag, StringComparison.InvariantCultureIgnoreCase)) 
                 return;
 
             string link;

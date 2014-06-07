@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
@@ -105,7 +106,13 @@ namespace nFact.SpecFlow
                             nextSibling.FirstChild.FirstChild.FirstChild.Name == "pre")
                         {
                             var scenarioOutput = nextSibling.FirstChild.FirstChild.FirstChild;
-                            ScenarioOutput.ProcessScenario(scenarioOutput, out scenarioCount);
+                            Debugger.Break();
+                            scenarioCount = ScenarioOutput.GetScenarioCount(scenarioOutput);
+                            var setupLink = ScenarioOutput.GetTagContent(scenarioOutput, "@setup");
+                            var tearDownLink = ScenarioOutput.GetTagContent(scenarioOutput, "@teardown");
+                            
+                            AddSetupLink(setupLink, node);
+                            AddTeardownLink(tearDownLink, node);
 
                             if (scenarioCount == 0)
                                 continue;
@@ -123,12 +130,34 @@ namespace nFact.SpecFlow
             ChangeToggleFunction();
         }
 
+        private void AddSetupLink(string setupLink, HtmlNode node)
+        {
+            AddLink(setupLink, node, "setup");
+        }
+
+        private void AddTeardownLink(string tearDownLink, HtmlNode node)
+        {
+            AddLink(tearDownLink, node, "teardown");
+        }
+
+        private void AddLink(string url, HtmlNode node, string label)
+        {
+            if (string.IsNullOrEmpty(url))
+                return;
+
+            var html = string.Format("<a href=\"{0}\" >[{1}]</a>", url, label);
+            var link = HtmlNode.CreateNode(html);
+            var space = HtmlNode.CreateNode("&nbsp;&nbsp;");
+            node.ParentNode.AppendChild(space);
+            node.ParentNode.AppendChild(link);
+        }
+
         public void AddExternalLinks()
         {
             var parser = new TestResultTextParser();
 
             var filePath = Path.Combine(_properties.ArtifactsPath, "TestResult.txt");
-            var links = parser.GetLinks(filePath);
+            var links = parser.GetContent(filePath, "@link");
 
             var doc = new HtmlDocument();
             var report = _properties.HtmlReport;

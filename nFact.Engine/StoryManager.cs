@@ -9,7 +9,34 @@ namespace nFact.Engine
 {
     public class StoryManager
     {
-        public Project GetStoryByEnvionment(Model.Project project, string storyId)
+        public Project GetCurrentProjectStoryResults(Model.Project project, string storyId)
+        {
+            var projectResults = GetProjectStoryResults(project);
+            var environments = from e in projectResults.Environments
+                               select new Environment
+                               {
+                                   Name = e.Name,
+                                   Stories = CurrentStories(storyId, e)
+                               };
+
+            return new Project
+            {
+                Name = project.Name,
+                Environments = environments.ToArray()
+            };
+        }
+
+        private static Story[] CurrentStories(string storyId, Environment e)
+        {
+            var result = from s in e.Stories
+                             where s.Id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase)
+                             select s;
+
+            var current = result.Last();
+            return new[] {current};
+        }
+
+        public Project GetProjectStoryResults(Model.Project project, string storyId)
         {
             var projectResults = GetProjectStoryResults(project);
             var environments = from e in projectResults.Environments
