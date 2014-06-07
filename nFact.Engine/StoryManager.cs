@@ -16,7 +16,7 @@ namespace nFact.Engine
                                select new Environment
                                {
                                    Name = e.Name,
-                                   Stories = CurrentStories(storyId, e)
+                                   Stories = CurrentStoriesResults(storyId, e)
                                };
 
             return new Project
@@ -26,14 +26,18 @@ namespace nFact.Engine
             };
         }
 
-        private static Story[] CurrentStories(string storyId, Environment e)
+        private static Story[] CurrentStoriesResults(string storyId, Environment e)
         {
-            var result = from s in e.Stories
-                             where s.Id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase)
-                             select s;
-
-            var current = result.Last();
-            return new[] {current};
+            var stories = from s in e.Stories
+                         where s.Id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase)
+                         select new Story
+                                    {
+                                        Id = s.Id,
+                                        Name = s.Name,
+                                        Description = s.Description,
+                                        Results = new[] {s.Results.Last()}
+                                    };
+            return stories.ToArray();
         }
 
         public Project GetProjectStoryResults(Model.Project project, string storyId)
