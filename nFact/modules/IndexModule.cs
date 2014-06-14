@@ -21,6 +21,7 @@ namespace nFact.modules
             Get["/{spec}/{test}"] = p => GetResults(p.spec, p.test, true);
             Get["/{spec}/{test}/artifacts/{file}"] = p => GetFile(p.spec, p.test, p.file);
             Get["/{spec}/stories/{id}"] = p => GetCurrentResultsByStory(p.spec, p.id);
+            Get["/{spec}/stories"] = p => GetCurrentResultsByStory(p.spec, null);
             Post["/settings"] = p => SaveSettings();
         }
 

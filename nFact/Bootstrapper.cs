@@ -16,6 +16,7 @@ namespace nFact
             StaticConfiguration.DisableErrorTraces = false;
 
             Hooks.Enable(pipelines, new InMemoryCache(), container.Resolve<IRootPathProvider>());
+            Jsonp.Enable(pipelines);
         }
 
         protected override void ConfigureConventions(NancyConventions nancyConventions)
