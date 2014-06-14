@@ -30,7 +30,7 @@ namespace nFact.modules
             if (format != null)
                 return GetResultsByProject(spec, format);
 
-            return View["index", BuildViewModel(spec, null)];
+            return View["index", BuildViewModel(spec, test, showControls)];
         }
 
         private dynamic GetFile(string spec, string test, string file)

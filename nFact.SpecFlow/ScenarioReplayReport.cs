@@ -106,7 +106,6 @@ namespace nFact.SpecFlow
                             nextSibling.FirstChild.FirstChild.FirstChild.Name == "pre")
                         {
                             var scenarioOutput = nextSibling.FirstChild.FirstChild.FirstChild;
-                            Debugger.Break();
                             scenarioCount = ScenarioOutput.GetScenarioCount(scenarioOutput);
                             var setupLink = ScenarioOutput.GetTagContent(scenarioOutput, "@setup");
                             var tearDownLink = ScenarioOutput.GetTagContent(scenarioOutput, "@teardown");
