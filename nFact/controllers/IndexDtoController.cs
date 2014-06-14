@@ -4,9 +4,16 @@ using nFact.Engine.Model.DataTransfer;
 
 namespace nFact.controllers
 {
-    public class DataTransferController : CommandController
+    public class IndexDtoController : IndexController
     {
-        public Project GetStoryByEnvionment(string spec, string storyId)
+        public Project GetCurrentProjectStoryResults(string spec, string storyId)
+        {
+            var project = GetProject(spec);
+            var manager = new StoryManager();
+            return manager.GetCurrentProjectStoryResults(project, storyId);
+        }
+
+        public Project GetProjectStoryResults(string spec, string storyId)
         {
             var project = GetProject(spec);
             var manager = new StoryManager();

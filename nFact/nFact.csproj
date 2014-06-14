@@ -95,9 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="controllers\CommandController.cs" />
+    <Compile Include="controllers\IndexController.cs" />
     <Compile Include="controllers\ConfigController.cs" />
-    <Compile Include="controllers\DataTransferController.cs" />
+    <Compile Include="controllers\IndexDtoController.cs" />
     <Compile Include="controllers\RunnerController.cs" />
     <Compile Include="controllers\SourceController.cs" />
     <Compile Include="modules\ConfigModule.cs" />

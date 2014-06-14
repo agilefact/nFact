@@ -7,12 +7,12 @@ using nFact.viewModels;
 
 namespace nFact.controllers
 {
-    public class CommandController
+    public class IndexController
     {
         private string[] _specs;
         private readonly SpecManager _specManager;
 
-        public CommandController()
+        public IndexController()
         {
             _specManager = ScriptEngine.Instance.SpecManager;
         }

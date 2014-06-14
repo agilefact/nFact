@@ -7,7 +7,7 @@ namespace nFact.modules
 {
     public class SlidesModule : NancyModule
     {
-        CommandController _controller = new CommandController();
+        IndexController _controller = new IndexController();
 
         public SlidesModule()
         {
