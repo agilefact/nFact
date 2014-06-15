@@ -9,6 +9,23 @@ namespace nFact.Engine
 {
     public class StoryManager
     {
+        public Project GetCurrentProjectStoryResults(Model.Project project)
+        {
+            var projectResults = GetProjectStoryResults(project);
+            var environments = from e in projectResults.Environments
+                               select new Environment
+                               {
+                                   Name = e.Name,
+                                   Stories = CurrentStoriesResults(e)
+                               };
+
+            return new Project
+            {
+                Name = project.Name,
+                Environments = environments.ToArray()
+            };
+        }
+
         public Project GetCurrentProjectStoryResults(Model.Project project, string storyId)
         {
             var projectResults = GetProjectStoryResults(project);
@@ -37,6 +54,19 @@ namespace nFact.Engine
                                         Description = s.Description,
                                         Results = new[] {s.Results.Last()}
                                     };
+            return stories.ToArray();
+        }
+
+        private static Story[] CurrentStoriesResults(Environment e)
+        {
+            var stories = from s in e.Stories
+                          select new Story
+                          {
+                              Id = s.Id,
+                              Name = s.Name,
+                              Description = s.Description,
+                              Results = new[] { s.Results.Last() }
+                          };
             return stories.ToArray();
         }
 

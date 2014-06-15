@@ -3,6 +3,7 @@ using System.IO;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
+using nFact.Engine.Model.DataTransfer;
 using nFact.controllers;
 using nFact.viewModels;
 
@@ -10,8 +11,8 @@ namespace nFact.modules
 {
     public class IndexModule : NancyModule
     {
-        readonly CommandController _controller = new CommandController();
-        readonly DataTransferController _dtoController = new DataTransferController();
+        readonly IndexController _controller = new IndexController();
+        readonly IndexDtoController _dtoController = new IndexDtoController();
 
         public IndexModule()
         {
@@ -19,6 +20,8 @@ namespace nFact.modules
             Get["/{spec}"] = p => GetResults(p.spec, null);
             Get["/{spec}/{test}"] = p => GetResults(p.spec, p.test, true);
             Get["/{spec}/{test}/artifacts/{file}"] = p => GetFile(p.spec, p.test, p.file);
+            Get["/{spec}/stories/{id}"] = p => GetCurrentResultsByStory(p.spec, p.id);
+            Get["/{spec}/stories"] = p => GetCurrentResultsByStory(p.spec, null);
             Post["/settings"] = p => SaveSettings();
         }
 
@@ -26,9 +29,9 @@ namespace nFact.modules
         {
             string format = Request.Query.format;
             if (format != null)
-                return GetAllResults(spec, format);
+                return GetResultsByProject(spec, format);
 
-            return View["index", BuildViewModel(spec, null)];
+            return View["index", BuildViewModel(spec, test, showControls)];
         }
 
         private dynamic GetFile(string spec, string test, string file)
@@ -43,7 +46,7 @@ namespace nFact.modules
             var response = new StreamResponse(() => new FileStream(filePath, FileMode.Open), mimeType);
 
             if (mimeType == "text/plain")
-                return Response.AsText(File.ReadAllText(filePath));
+                return base.Response.AsText(File.ReadAllText(filePath));
 
             return response.AsAttachment(file);
         }
@@ -68,15 +71,39 @@ namespace nFact.modules
             return viewModel;
         }
 
-        private dynamic GetAllResults(string spec, string format)
+        private dynamic GetResultsByProject(string spec, string format)
         {
             var result = _dtoController.GetProjectStoryResults(spec);
 
+            return ReusultResponse(format, result);
+        }
+
+        private dynamic GetResultsByStory(string spec, string id)
+        {
+            string format = Request.Query.format;
+            var result = _dtoController.GetProjectStoryResults(spec, id);
+
+            return ReusultResponse(format, result);
+        }
+
+        private dynamic GetCurrentResultsByStory(string spec, string id)
+        {
+            string format = Request.Query.format;
+            var result = _dtoController.GetCurrentProjectStoryResults(spec, id);
+
+            return ReusultResponse(format, result);
+        }
+
+        private dynamic ReusultResponse(string format, Project result)
+        {
+            if (string.IsNullOrEmpty(format))
+                return HttpStatusCode.BadRequest;
+
             if (format.Equals("json", StringComparison.CurrentCultureIgnoreCase))
-                return Response.AsJson(result);
+                return base.Response.AsJson(result);
 
             if (format.Equals("xml", StringComparison.CurrentCultureIgnoreCase))
-                return Response.AsXml(result);
+                return base.Response.AsXml(result);
 
             return HttpStatusCode.BadRequest;
         }

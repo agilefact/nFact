@@ -6,7 +6,7 @@ namespace nFact.viewModels
     {
         public static PageDataModel Build(string spec)
         {
-            var controller = new CommandController();
+            var controller = new IndexController();
             var specs = controller.GetSpecs();
             var dataModel = controller.GetEngineDataModel();
 
