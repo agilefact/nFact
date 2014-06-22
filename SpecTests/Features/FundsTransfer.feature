@@ -1,4 +1,4 @@
-﻿@rally{12345}
+﻿@rally{US39}
 
 Feature: Customer Transfer's Fund
        As a customer

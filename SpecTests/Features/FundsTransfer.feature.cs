@@ -20,7 +20,7 @@ namespace SpecTests.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Customer Transfer\'s Fund")]
-    [NUnit.Framework.CategoryAttribute("rally{12345}")]
+    [NUnit.Framework.CategoryAttribute("rally{US39}")]
     public partial class CustomerTransferSFundFeature
     {
         
@@ -35,7 +35,7 @@ namespace SpecTests.Features
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Customer Transfer\'s Fund", "     As a customer\r\n     I want to transfer funds\r\n     so that I can send money " +
                     "to my friends and family", ProgrammingLanguage.CSharp, new string[] {
-                        "rally{12345}"});
+                        "rally{US39}"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
