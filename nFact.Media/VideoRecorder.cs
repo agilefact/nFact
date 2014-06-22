@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.Expression.Encoder.ScreenCapture;
 using nFact.Shared;
@@ -32,6 +33,7 @@ namespace nFact.Media
 
             scj = new ScreenCaptureJob();
             scj.OutputScreenCaptureFileName = _filePathXesc;
+            scj.Duration = TimeSpan.FromMinutes(MaxRecordingTime);
 
             scj.Start();
             _isRunning = true;
@@ -60,7 +62,6 @@ namespace nFact.Media
                 _logger.Log("Video recording stopped");
 
                 _isRunning = false;
-                var artifacts = context.Artifacts;
                 _encoder.Encode(_filePathXesc, _filePathMp4);
                 //_encoder.Encode(_filePathXesc, artifacts.FilePath);
             }
