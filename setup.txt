@@ -1,1 +1,5 @@
 1. Install Expression Encoder 4 SP2: http://www.microsoft.com/en-au/download/details.aspx?id=27870
+  - Leave Product Key blank
+2. Ensure Windows Media Player is installed.
+  - To install the Windows Media Player on Windows Server 2008 R2, you should add the Desktop Experience feature.  Go to Server Manager, then Features, then add it.
+3. Run Handle.exe and accept user agreement
