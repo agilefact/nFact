@@ -22,12 +22,7 @@ namespace nFact.Engine
 
             foreach (var fixture in fixtures)
             {
-                var categories = from c in fixture.Descendants("category")
-                                 let a = c.Attribute("name")
-                                 where
-                                     a != null &&
-                                     a.Value.StartsWith("rally", StringComparison.InvariantCultureIgnoreCase)
-                                 select c;
+                var categories = GetStoryCategories(fixture);
 
                 foreach (var category in categories)
                 {
@@ -40,6 +35,71 @@ namespace nFact.Engine
             }
 
             return results.ToArray();
+        }
+
+        private static IEnumerable<XElement> GetStoryCategories(XElement fixture)
+        {
+            var categories = from c in fixture.Descendants("category")
+                             let a = c.Attribute("name")
+                             where
+                                 a != null &&
+                                 (
+                                     a.Value.StartsWith("rally", StringComparison.InvariantCultureIgnoreCase) ||
+                                     a.Value.StartsWith("jira", StringComparison.InvariantCultureIgnoreCase)
+                                 )
+                             select c;
+            return categories;
+        }
+
+        public static void AcceptStoryResult(string storyId, string file)
+        {
+            var resultsXml = XElement.Load(file);
+
+            var storyResult = FindFixture(resultsXml, storyId);
+            if (storyResult == null)
+                throw new ApplicationException(string.Format("Unable to find story Id: {0}", storyId));
+
+            storyResult.Add(new XAttribute("accepted", true));
+
+            resultsXml.Save(file);
+        }
+
+        public static void DeclineStoryResult(string storyId, string file)
+        {
+            var resultsXml = XElement.Load(file);
+
+            var storyResult = FindFixture(resultsXml, storyId); if (storyResult == null)
+                throw new ApplicationException(string.Format("Unable to find story Id: {0}", storyId));
+
+            var xAttribute = storyResult.Attribute("accepted");
+            if (xAttribute == null)
+                return;
+
+            xAttribute.Remove();
+
+            resultsXml.Save(file);
+        }
+
+        private static XElement FindFixture(XElement results, string storyId)
+        {
+            var fixtures = from f in results.XPathSelectElements("//test-suite[@type = 'TestFixture']")
+                           select f;
+
+            foreach (var fixture in fixtures)
+            {
+                var categories = GetStoryCategories(fixture);
+
+                foreach (var category in categories)
+                {
+                    string id;
+                    CommandParser.GetContents(category.Attribute("name").Value, '{', '}', out id);
+
+                    if (id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase))
+                        return fixture;
+                }
+            }
+
+            return null;
         }
 
         public static StoryResult GetRallyStoryResult(string rallyId, string file)

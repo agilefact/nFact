@@ -15,6 +15,7 @@ namespace nFact.Engine.Model
         public double Seconds { get; private set; }
         public int Asserts { get; private set; }
         public string Id { get; private set; }
+        public bool Accepted { get; private set; }
 
         public static StoryResult Parse(XElement xml, string id)
         {
@@ -42,6 +43,9 @@ namespace nFact.Engine.Model
 
             int.TryParse(GetValue(xml, "asserts"), out i);
             s.Asserts = i;
+
+            bool.TryParse(GetValue(xml, "accepted"), out b);
+            s.Accepted = b;
 
             return s;
         }

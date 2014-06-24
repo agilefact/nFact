@@ -22,6 +22,20 @@ namespace nFact.Engine.Test
             Assert.AreEqual(true, story.Executed);
             Assert.AreEqual(Result.Success, story.Result);
             Assert.AreEqual(16, story.Seconds);
+            Assert.AreEqual(true, story.Accepted);
+        }
+
+        [Test]
+        public void AcceptStoryResult()
+        {
+            var file = Path.Combine(Environment.CurrentDirectory, "TestResult.xml");
+            TestResultsManager.DeclineStoryResult("12345", file);
+            var story = TestResultsManager.GetRallyStoryResult("12345", file);
+            Assert.AreEqual(false, story.Accepted);
+
+            TestResultsManager.AcceptStoryResult("12345", file);
+            story = TestResultsManager.GetRallyStoryResult("12345", file);
+            Assert.AreEqual(true, story.Accepted);
         }
 
         [Test]
