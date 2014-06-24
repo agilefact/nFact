@@ -30,6 +30,7 @@ namespace AcceptanceTests.Scenarios
             WriteScenario();
             WriteLinks("link");
             WriteLinks("jira");
+            WriteLinks("rally");
         }
 
         public static void End()
@@ -50,29 +51,30 @@ namespace AcceptanceTests.Scenarios
         {
             var tags = FeatureContext.Current.FeatureInfo.Tags;
             var selectedTags = from t in tags
-                           where string.Equals(t.Substring(0, 4), tag, StringComparison.CurrentCultureIgnoreCase)
+                           where string.Equals(t.Substring(0, tag.Length), tag, StringComparison.CurrentCultureIgnoreCase)
                            select t;
 
 
             foreach (var t in selectedTags)
             {
-                switch(tag)
+                switch(tag.ToLower())
                 {
                     case "jira":
-                        WriteJiraLink(t);
-                        break;
-                    default:
-                        Console.WriteLine(string.Format("@{0}", t));
+                        WriteJiraLink("jira", t);
                         break;
                 }
+
+                Console.WriteLine(string.Format("@{0}", t));
             }
         }
 
-        private static void WriteJiraLink(string tag)
+        private static void WriteJiraLink(string label, string tag)
         {
+            var labelLength = label.Length;
             var domain = TestConfigurationManager.Settings["JIRA.Domain"];
             var project = TestConfigurationManager.Settings["JIRA.Project"];
-            var issue = tag.Substring(5, tag.Length - 6);
+            var start = labelLength + 1;
+            var issue = tag.Substring(start, tag.Length - start + 1);
             var url = string.Format("{0}/browse/{1}-{2}", domain, project, issue);
             Console.Write("@link{");
             Console.Write(url);

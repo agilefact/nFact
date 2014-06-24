@@ -6,11 +6,17 @@ namespace nFact.SpecFlow
 {
     public class TestResultTextParser
     {
-        private Dictionary<string, List<string>> _links = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> _tags = new Dictionary<string, List<string>>();
 
         private string _feature;
 
-        public Dictionary<string, List<string>> GetContent(string path, string tag)
+        public static Dictionary<string, List<string>> GetContent(string path, string tag)
+        {
+            var parser = new TestResultTextParser();
+            return parser.Get(path, tag);
+        }
+
+        public Dictionary<string, List<string>> Get(string path, string tag)
         {
             using (var stream = new StreamReader(path))
             {
@@ -21,7 +27,7 @@ namespace nFact.SpecFlow
                     ParseTagLine(_feature, line, tag);
                 }
             }
-            return _links;
+            return _tags;
         }
 
         private void ParseFeaureLine(string line)
@@ -62,11 +68,11 @@ namespace nFact.SpecFlow
             string link;
             if (GetContents(line, '{', '}', out link))
             {
-                if (!_links.ContainsKey(feature))
-                    _links.Add(feature, new List<string>());
+                if (!_tags.ContainsKey(feature))
+                    _tags.Add(feature, new List<string>());
 
-                if (!_links[feature].Contains(link))
-                    _links[feature].Add(link);
+                if (!_tags[feature].Contains(link))
+                    _tags[feature].Add(link);
             }
         }
 

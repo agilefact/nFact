@@ -86,9 +86,10 @@ namespace nFact.SpecFlow
 
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes(@"//span[@title]"))
             {
-                // Scenario title is identified as beginning with the spec library namespace
                 var specName = _properties.SpecName;
                 var title = node.Attributes["title"];
+
+                // Scenario title is identified as beginning with the spec library namespace
                 if (!title.Value.StartsWith(string.Format("{0}.", specName)))
                     continue;
 
@@ -110,6 +111,8 @@ namespace nFact.SpecFlow
                             var setupLink = ScenarioOutput.GetTagContent(scenarioOutput, "@setup");
                             var tearDownLink = ScenarioOutput.GetTagContent(scenarioOutput, "@teardown");
                             
+
+
                             AddSetupLink(setupLink, node);
                             AddTeardownLink(tearDownLink, node);
 
@@ -153,17 +156,19 @@ namespace nFact.SpecFlow
 
         public void AddExternalLinks()
         {
-            var parser = new TestResultTextParser();
-
             var filePath = Path.Combine(_properties.ArtifactsPath, "TestResult.txt");
-            var links = parser.GetContent(filePath, "@link");
+            var links = TestResultTextParser.GetContent(filePath, "@link");
+            var jiraIds = TestResultTextParser.GetContent(filePath, "@jira");
+            var rallyIds = TestResultTextParser.GetContent(filePath, "@rally");
 
             var doc = new HtmlDocument();
             var report = _properties.HtmlReport;
             doc.Load(report);
-
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes(@"//span[@title]"))
             {
+                if (node.ParentNode.Name != "h3")
+                    continue;
+
                 var title = node.Attributes["title"];
                 if (title == null)
                     break;
@@ -174,9 +179,31 @@ namespace nFact.SpecFlow
                     var link = links[feature][0];
                     AddExternalLink(link, node);
                 }
+
+                if (jiraIds.ContainsKey(feature) && jiraIds[feature].Count > 0)
+                {
+                    var id = jiraIds[feature][0];
+                    AddAcceptedButton(id, node);
+                }
+
+                if (rallyIds.ContainsKey(feature) && rallyIds[feature].Count > 0)
+                {
+                    var id = rallyIds[feature][0];
+                    AddAcceptedButton(id, node);
+                }
             }
 
             doc.Save(report);
+        }
+
+        private void AddAcceptedButton(string id, HtmlNode node)
+        {
+            var html = string.Format("<button data-bind=\"click: accept({0})\" class=\"btn btn-success btn-xs\" style=\"width: 60px\">Accept</button>", id);
+            var linkNode = HtmlNode.CreateNode(html);
+            var space = HtmlNode.CreateNode("&nbsp;&nbsp;");
+
+            node.ParentNode.AppendChild(space);
+            node.ParentNode.AppendChild(linkNode);
         }
 
         private void AddExternalLink(string link, HtmlNode node)

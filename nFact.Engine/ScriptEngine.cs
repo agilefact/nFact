@@ -78,8 +78,8 @@ namespace nFact.Engine
             _scriptRunning = true;
             _scriptState = ScriptMessageState.OK;
 
-            var messageHandle = MessageHandler.Instance;
-            messageHandle.Reset();
+            var messageHandler = MessageHandler.Instance;
+            messageHandler.Reset();
 
             CreateArtifacts(model);
 
