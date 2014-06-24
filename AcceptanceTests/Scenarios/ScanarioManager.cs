@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AcceptanceTests.Configuration;
+using AcceptanceTests.TestData;
 using TechTalk.SpecFlow;
 
 namespace AcceptanceTests.Scenarios
@@ -9,17 +11,25 @@ namespace AcceptanceTests.Scenarios
     public class ScanarioManager
     {
         public static int ScenarioCount { get; private set; }
+        private static bool _scenarioRunning;
 
         public static void Start()
         {
+            if(_scenarioRunning)
+                End();
+
+            Scenario.Start();
+
+            _scenarioRunning = true;
             ScenarioCount++;
 
             Console.Write("{Scenario.Start(");
             Console.Write(ScenarioCount);
             Console.WriteLine(")}");
 
-            WriteLinks();
             WriteScenario();
+            WriteLinks("link");
+            WriteLinks("jira");
         }
 
         public static void End()
@@ -31,24 +41,42 @@ namespace AcceptanceTests.Scenarios
 
         private static void WriteScenario()
         {
-            Console.WriteLine("Feature: " + FeatureContext.Current.FeatureInfo.Title);
+            Console.WriteLine("Story: " + FeatureContext.Current.FeatureInfo.Title);
             Console.WriteLine(FeatureContext.Current.FeatureInfo.Description);
             Console.WriteLine("\r\nScenario: " + ScenarioContext.Current.ScenarioInfo.Title);
         }
 
-        private static void WriteLinks()
+        private static void WriteLinks(string tag)
         {
             var tags = FeatureContext.Current.FeatureInfo.Tags;
-            var linkTags = from t in tags
-                           where string.Equals(t.Substring(0, 4), "link", StringComparison.CurrentCultureIgnoreCase)
+            var selectedTags = from t in tags
+                           where string.Equals(t.Substring(0, 4), tag, StringComparison.CurrentCultureIgnoreCase)
                            select t;
 
 
-            foreach (var link in linkTags)
+            foreach (var t in selectedTags)
             {
-                Console.WriteLine(string.Format("@{0}", link));
+                switch(tag)
+                {
+                    case "jira":
+                        WriteJiraLink(t);
+                        break;
+                    default:
+                        Console.WriteLine(string.Format("@{0}", t));
+                        break;
+                }
             }
         }
-        
+
+        private static void WriteJiraLink(string tag)
+        {
+            var domain = TestConfigurationManager.Settings["JIRA.Domain"];
+            var project = TestConfigurationManager.Settings["JIRA.Project"];
+            var issue = tag.Substring(5, tag.Length - 6);
+            var url = string.Format("{0}/browse/{1}-{2}", domain, project, issue);
+            Console.Write("@link{");
+            Console.Write(url);
+            Console.Write("}");
+        }
     }
 }
