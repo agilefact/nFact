@@ -13,7 +13,8 @@ namespace nFact.Engine.Model.DataTransfer.Flat
         public DateTime TestTime;
         public string TestVersion;
         public string Result;
-        public double DurationSecs;
+        public double DurationSecs; 
+        public bool Accepted;
     }
 }
 
@@ -46,5 +47,6 @@ namespace nFact.Engine.Model.DataTransfer
         public string TestVersion;
         public string Result;
         public double DurationSecs;
+        public bool Accepted;
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using nFact.Engine.Model.DataTransfer;
 using Environment = nFact.Engine.Model.DataTransfer.Environment;
@@ -70,6 +71,52 @@ namespace nFact.Engine
             return stories.ToArray();
         }
 
+        public bool AcceptStoryResult(Model.Project project, string storyId, int testRun)
+        {
+            if (!CanAcceptStory(project, storyId, testRun)) 
+                return false;
+
+            var artifact = project.Artifacts.FirstOrDefault(a => a.TestRun == testRun);
+            if (artifact == null)
+                return false;
+
+            var filePath = Path.Combine(artifact.FilePath, artifact.NUnitResultXmlFile);
+            TestResultsManager.AcceptStoryResult(storyId, filePath);
+
+            return true;
+        }
+
+        public bool DeclineStoryResult(Model.Project project, string storyId, int testRun)
+        {
+            var artifact = project.Artifacts.FirstOrDefault(a => a.TestRun == testRun);
+            if (artifact == null)
+                return false;
+
+            var filePath = Path.Combine(artifact.FilePath, artifact.NUnitResultXmlFile);
+            TestResultsManager.DeclineStoryResult(storyId, filePath);
+            return true;
+        }
+
+        public bool CanAcceptStory(Model.Project project, string storyId, int testRun)
+        {
+            var storyResults = GetStoryResults(project);
+            var story = storyResults.FirstOrDefault(s => s.Id == storyId && s.TestRun == testRun);
+            if (story == null)
+                return false;
+
+            var environment = story.Environment;
+            var futureStories = from s in storyResults
+                                where s.Environment.Equals(environment, StringComparison.InvariantCultureIgnoreCase) &&
+                                      s.Id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase) &&
+                                      s.TestRun > testRun &&
+                                      s.Accepted
+                                select s;
+
+            if (futureStories.Any())
+                return false;
+            return true;
+        }
+
         public Project GetProjectStoryResults(Model.Project project, string storyId)
         {
             var projectResults = GetProjectStoryResults(project);
@@ -130,7 +177,8 @@ namespace nFact.Engine
                               Result = s.Result,
                               TestRun = s.TestRun,
                               TestTime = s.TestTime,
-                              TestVersion = s.TestVersion
+                              TestVersion = s.TestVersion,
+                              Accepted = s.Accepted
                           };
 
             return results.ToArray();
@@ -153,7 +201,8 @@ namespace nFact.Engine
                               Result = s.Result.ToString(),
                               TestRun = a.TestRun,
                               TestTime = a.Date,
-                              TestVersion = a.Version
+                              TestVersion = a.Version,
+                              Accepted = s.Accepted
                           };
 
             return results.ToArray();
