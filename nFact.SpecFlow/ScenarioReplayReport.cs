@@ -198,7 +198,7 @@ namespace nFact.SpecFlow
 
         private void AddAcceptedButton(string id, HtmlNode node)
         {
-            var html = string.Format("<button data-bind=\"click: accept({0})\" class=\"btn btn-success btn-xs\" style=\"width: 60px\">Accept</button>", id);
+            var html = string.Format("<button data-bind=\"click: accept({0})\" class=\"btn btn-success btn-xs\" disabled=\"disabled\" style=\"width: 60px\">Accept</button>", id);
             var linkNode = HtmlNode.CreateNode(html);
             var space = HtmlNode.CreateNode("&nbsp;&nbsp;");
 

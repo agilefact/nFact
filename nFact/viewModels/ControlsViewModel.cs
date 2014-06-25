@@ -40,7 +40,7 @@ namespace nFact.viewModels
             _dataModel = dataModel;
             ControlsVisible = true;
             var numOfPages = 5;
-            var page = ConfigurationManager.AppSettings["ArtifactsPagination"];
+            var page = ConfigurationManager.AppSettings["ReportPagination"];
             if (page != null)
             {
                 int.TryParse(page, out numOfPages);
