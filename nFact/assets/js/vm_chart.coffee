@@ -3,7 +3,28 @@
 	vm.create()
 			
 class App.Chart
+	getData: (url, callback) ->
+		$.ajax(
+			type: "GET",
+			url: url,
+			contentType: "application/json"
+			dataType: "html",
+			data: "",
+			cache: false,
+			success: (data) ->
+				callback()
+			,
+			error: (XMLHttpRequest, textStatus, errorThrown) -> 
+			)
 	create: ->
+		json = $('#dataModel').html()
+		dataModel = jQuery.parseJSON(json)
+		spec = dataModel.spec
+		storyId = "12345"
+		url = "/" + spec + "/story/" + storyId + "/history?format=xml"
+		this.getData(url, this.render)
+
+	render: ->
 		$("#chart-container").highcharts
 			title:
 				text: "Monthly Average Temperature"

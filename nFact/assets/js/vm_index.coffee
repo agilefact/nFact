@@ -18,7 +18,7 @@ class App.Index
 		@accept = (storyId) ->
 			spec = context.getSelectedSpec()
 			test = context.getTestRun()
-			url = "/" + spec + "/stories/" + storyId + "/test/" + test + "/accept"
+			url = "/" + spec + "/story/" + storyId + "/test/" + test + "/accept"
 
 			$.ajax(
 				type: "POST",

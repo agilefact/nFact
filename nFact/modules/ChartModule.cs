@@ -12,9 +12,12 @@ namespace nFact.modules
 
         private ChartViewModel BuildViewModel(string spec)
         {
-            var pageModel = PageDataModelBuilder.Build(spec);
+            var data = new ChartDataModel
+                                {
+                                    spec = spec
+                                };
 
-            return new ChartViewModel(pageModel);
+            return new ChartViewModel(data);
         }
     }
 }
