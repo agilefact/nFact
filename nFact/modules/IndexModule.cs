@@ -88,7 +88,7 @@ namespace nFact.modules
         {
             var result = _dtoController.GetProjectStoryResults(spec);
 
-            return ReusultResponse(format, result);
+            return ResultResponse(format, result);
         }
 
         private dynamic GetResultsByStory(string spec, string id)
@@ -96,7 +96,7 @@ namespace nFact.modules
             string format = Request.Query.format;
             var result = _dtoController.GetProjectStoryResults(spec, id);
 
-            return ReusultResponse(format, result);
+            return ResultResponse(format, result);
         }
 
         private dynamic GetCurrentResultsByStory(string spec, string id)
@@ -104,10 +104,10 @@ namespace nFact.modules
             string format = Request.Query.format;
             var result = _dtoController.GetCurrentProjectStoryResults(spec, id);
 
-            return ReusultResponse(format, result);
+            return ResultResponse(format, result);
         }
 
-        private dynamic ReusultResponse(string format, Project result)
+        private dynamic ResultResponse(string format, Project result)
         {
             if (string.IsNullOrEmpty(format))
                 return HttpStatusCode.BadRequest;
