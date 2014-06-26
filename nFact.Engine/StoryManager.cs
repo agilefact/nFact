@@ -104,17 +104,31 @@ namespace nFact.Engine
             if (story == null)
                 return false;
 
+            var storyPassed = story.Result.Equals("Success", StringComparison.InvariantCultureIgnoreCase);
+            if (!storyPassed)
+                return false;
+
             var environment = story.Environment;
             var futureStories = from s in storyResults
                                 where s.Environment.Equals(environment, StringComparison.InvariantCultureIgnoreCase) &&
                                       s.Id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase) &&
-                                      s.TestRun > testRun &&
+                                      s.TestRun >= testRun &&
                                       s.Accepted
                                 select s;
 
             if (futureStories.Any())
                 return false;
             return true;
+        }
+
+        public bool IsAccepted(Model.Project project, string storyId, int testRun)
+        {
+            var storyResults = GetStoryResults(project);
+            var story = storyResults.FirstOrDefault(s => s.Id == storyId && s.TestRun == testRun);
+            if (story == null)
+                return false;
+
+            return story.Accepted;
         }
 
         public Project GetProjectStoryResults(Model.Project project, string storyId)

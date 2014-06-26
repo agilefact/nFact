@@ -15,6 +15,8 @@ class Context
 		@controls.selectedSpec()
 	getSelectedEnvironment: () ->
 		@controls.selectedEnvironment();
+	getTestRun: () ->
+		@controls.testRun();
 	navigateHome: () ->
 		this.navigate("/")
 	navigateToSpec: (spec) ->

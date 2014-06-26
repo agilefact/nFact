@@ -6,6 +6,7 @@
 		@specs = []
 		@environments = []
 		@selectedEnvironment = ko.observable()
+		@testRun = ko.observable()
 		@navigate = ko.observable()
 		@isVisible = ko.observable(false)
 		@restarting = ko.observable(false)
@@ -58,6 +59,7 @@
 		state.steps = dataModel.steps
 		state.environments = dataModel.environments
 		state.selectedEnvironment = dataModel.selectedEnvironment
+		state.testRun = dataModel.testRun
 
 		# create view model initialised with current state
 		controls = ko.mapping.fromJS(state);

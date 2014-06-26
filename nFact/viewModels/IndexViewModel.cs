@@ -54,17 +54,22 @@ namespace nFact.viewModels
 
             var manager = new StoryManager();
 
-            var nodes = htmlReport.DocumentNode.SelectNodes("//button[@storyid]");
+            var nodes = htmlReport.DocumentNode.SelectNodes("//button[@story-id]");
             if (nodes == null)
                 return;
             foreach (var node in nodes)
             {
-                var storyId = node.GetAttributeValue("storyid", string.Empty);  
+                var storyId = node.GetAttributeValue("story-id", string.Empty);  
                 if (string.IsNullOrEmpty(storyId))
                     continue;
 
                 var canAccept = manager.CanAcceptStory(project, storyId, _testRun);
-                if(canAccept)
+                var isAccepted = manager.IsAccepted(project, storyId, _testRun);
+                if(isAccepted)
+                {
+                    node.InnerHtml = "Accepted";
+                }
+                else if(canAccept)
                 {
                     var disabled = node.Attributes["disabled"];
                     if (disabled != null)

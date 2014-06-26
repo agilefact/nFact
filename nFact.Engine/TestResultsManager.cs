@@ -59,6 +59,10 @@ namespace nFact.Engine
             if (storyResult == null)
                 throw new ApplicationException(string.Format("Unable to find story Id: {0}", storyId));
 
+            var xAttributes = storyResult.Attributes("accpeted");
+            if (xAttributes.Any())
+                return;
+
             storyResult.Add(new XAttribute("accepted", true));
 
             resultsXml.Save(file);

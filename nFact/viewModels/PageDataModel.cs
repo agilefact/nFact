@@ -10,6 +10,7 @@ namespace nFact.viewModels
         public bool steps { get; set; }
         public string[] environments { get; set; }
         public string selectedEnvironment { get; set; }
+        public int testRun { get; set; }
 
         public string ToJSON()
         {

@@ -6,6 +6,11 @@ namespace nFact.viewModels
     {
         public static PageDataModel Build(string spec)
         {
+            return Build(spec, 0);
+        }
+
+        public static PageDataModel Build(string spec, int testRun)
+        {
             var controller = new IndexController();
             var specs = controller.GetSpecs();
             var dataModel = controller.GetEngineDataModel();
@@ -28,6 +33,7 @@ namespace nFact.viewModels
             pageModel.steps = dataModel.RecordSteps;
             pageModel.environments = environments;
             pageModel.selectedEnvironment = selectedEnvironment;
+            pageModel.testRun = testRun;
 
             return pageModel;
         }

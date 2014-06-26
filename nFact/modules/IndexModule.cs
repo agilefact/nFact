@@ -22,7 +22,15 @@ namespace nFact.modules
             Get["/{spec}/{test}/artifacts/{file}"] = p => GetFile(p.spec, p.test, p.file);
             Get["/{spec}/stories/{id}"] = p => GetCurrentResultsByStory(p.spec, p.id);
             Get["/{spec}/stories"] = p => GetCurrentResultsByStory(p.spec, null);
+            Post["/{spec}/stories/{id}/test/{test}/accept"] = p => Accept(p.spec, p.id, p.test);
             Post["/settings"] = p => SaveSettings();
+        }
+
+        private dynamic Accept(string spec, string storyId, string test)
+        {
+            var testRun = int.Parse(test);
+            var result = _dtoController.AcceptStory(spec, storyId, testRun);
+            return result ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
         }
 
         private dynamic GetResults(string spec, string test, bool showControls = false)
@@ -64,6 +72,10 @@ namespace nFact.modules
             var artifacts = _controller.GetArtifacts(spec, test);
             if (artifacts == null)
                 return viewModel; // no results available
+
+            var testRun = artifacts.TestRun;
+            dataModel = PageDataModelBuilder.Build(spec, testRun);
+            viewModel = new IndexViewModel(dataModel);
 
             viewModel.RenderReport(artifacts);
             viewModel.Controls.ControlsVisible = showControls;
