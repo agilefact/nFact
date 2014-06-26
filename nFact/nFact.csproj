@@ -101,6 +101,7 @@
     <Compile Include="controllers\RunnerController.cs" />
     <Compile Include="controllers\SourceController.cs" />
     <Compile Include="modules\ConfigModule.cs" />
+    <Compile Include="modules\ChartModule.cs" />
     <Compile Include="modules\IndexModule.cs" />
     <Compile Include="modules\RunnerModule.cs" />
     <Compile Include="modules\SlidesModule.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="viewModels\ConfigViewModel.cs" />
     <Compile Include="viewModels\ControlsViewModel.cs" />
+    <Compile Include="viewModels\ChartViewModel.cs" />
     <Compile Include="viewModels\IndexViewModel.cs" />
     <Compile Include="viewModels\PageDataModel.cs" />
     <Compile Include="viewModels\PageDataModelBuilder.cs" />
@@ -132,6 +134,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="assets\fonts\glyphicons-halflings-regular.woff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="assets\js\vm_chart.coffee">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="assets\js\singleton.coffee">
@@ -160,6 +165,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="scripts\runspecflow.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="views\story.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="views\config.cshtml">
@@ -230,6 +238,9 @@
     <Content Include="assets\js\bootstrap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="assets\js\highcharts-custom.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="assets\js\jquery-1.10.2.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -260,6 +271,9 @@
     <Content Include="VideoEncoding.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="views\charts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
