@@ -2,7 +2,9 @@
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
+using nFact.Engine;
 using nFact.Engine.Model;
+using nFact.controllers;
 
 namespace nFact.viewModels
 {
@@ -12,6 +14,7 @@ namespace nFact.viewModels
         public string ReportBody { get; set; }
 
         private readonly string _spec;
+        private int _testRun;
         private ProjectArtifacts _artifacts;
 
         public IndexViewModel(PageDataModel pageModel) : base(pageModel)
@@ -22,6 +25,7 @@ namespace nFact.viewModels
         public void RenderReport(ProjectArtifacts artifacts)
         {
             _artifacts = artifacts;
+            _testRun = artifacts.TestRun;
 
             SetTestRunPagenation(artifacts.TestRun, artifacts.Project.TestRuns);
 
@@ -38,7 +42,35 @@ namespace nFact.viewModels
         {
             AddTitle(htmlReport);
             AddLogLink(htmlReport);
+            EnableAcceptButton(htmlReport);
             Merge(htmlReport);
+        }
+
+        private void EnableAcceptButton(HtmlDocument htmlReport)
+        {
+            
+            var controller = new IndexDtoController();
+            var project = controller.GetProject(_spec);
+
+            var manager = new StoryManager();
+
+            var nodes = htmlReport.DocumentNode.SelectNodes("//button[@storyid]");
+            if (nodes == null)
+                return;
+            foreach (var node in nodes)
+            {
+                var storyId = node.GetAttributeValue("storyid", string.Empty);  
+                if (string.IsNullOrEmpty(storyId))
+                    continue;
+
+                var canAccept = manager.CanAcceptStory(project, storyId, _testRun);
+                if(canAccept)
+                {
+                    var disabled = node.Attributes["disabled"];
+                    if (disabled != null)
+                        disabled.Remove();
+                }
+            }
         }
 
         private void AddTitle(HtmlDocument htmlReport)

@@ -28,5 +28,10 @@ namespace nFact.controllers
             var project = GetProject(spec);
             return _manager.GetProjectStoryResults(project);
         }
+
+        public bool CanAcceptStory(Engine.Model.Project project, string storyId, int testRun)
+        {
+            return _manager.CanAcceptStory(project, storyId, testRun);
+        }
     }
 }
