@@ -13,6 +13,8 @@ namespace nFact.Engine
     {
         private readonly ProjectsModel _dataModel = new ProjectsModel();
 
+        public ProjectsModel Model { get { return _dataModel; } }
+
         internal SpecManager()
         {
         }
@@ -129,6 +131,9 @@ namespace nFact.Engine
             var binPath = Path.Combine(Environment.CurrentDirectory, "projects");
             binPath = Path.Combine(binPath, spec);
             var defaultBinPath = ConfigurationManager.AppSettings["DefaultProjectBinPath"];
+            if (string.IsNullOrEmpty(defaultBinPath))
+                return null;
+
             binPath = Path.Combine(binPath, defaultBinPath);
             binPath = Path.Combine(binPath, string.Format("{0}.dll", spec));
             var projectAssembly = Assembly.LoadFile(binPath);

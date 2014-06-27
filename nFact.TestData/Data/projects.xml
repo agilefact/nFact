@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Projects>
+  <Project Name="SpecTests" TestRuns="5">
+    <TestEnvironments>
+      <TestEnvironment Name="local" TestRuns="5">
+        <Artifacts Date="20140626" Time="121735" TestRun="1" Version="1.0.0.0" />
+        <Artifacts Date="20140627" Time="121825" TestRun="2" Version="1.0.0.0" />
+        <Artifacts Date="20140628" Time="121900" TestRun="3" Version="1.0.0.0" />
+        <Artifacts Date="20140629" Time="122148" TestRun="4" Version="1.0.0.0" />
+        <Artifacts Date="20140630" Time="122245" TestRun="5" Version="1.0.0.0" />
+      </TestEnvironment>
+    </TestEnvironments>
+  </Project>
+  <Project Name="DBFitTestData" TestRuns="0">
+    <TestEnvironments />
+  </Project>
+</Projects>

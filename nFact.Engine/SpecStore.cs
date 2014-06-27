@@ -40,6 +40,12 @@ namespace nFact.Engine
 
         public static void SaveArtifacts(ProjectsModel dataModel)
         {
+            var dir = Path.Combine(Environment.CurrentDirectory, "projects.xml");
+            SaveArtifacts(dataModel, dir);
+        }
+
+        public static void SaveArtifacts(ProjectsModel dataModel, string dir)
+        {
             var data = new XElement("Projects");
             foreach (var project in dataModel.Projects.Values)
             {
@@ -82,7 +88,7 @@ namespace nFact.Engine
                 data.Add(xProject);
             }
 
-            data.Save(Path.Combine(Environment.CurrentDirectory, "projects.xml"));
+            data.Save(dir);
         }
 
         private static TestEnvironment CreateTestEnvironment(XElement x, Project project)

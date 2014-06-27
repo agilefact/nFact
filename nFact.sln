@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceTests", "Acceptan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nFact.Engine.Test", "nFact.Engine.Test\nFact.Engine.Test.csproj", "{4DD082A7-DFCB-4930-BC00-635091D3FB4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nFact.TestData", "nFact.TestData\nFact.TestData.csproj", "{A923155B-D958-46DE-953C-355A38B73494}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,16 @@ Global
 		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4DD082A7-DFCB-4930-BC00-635091D3FB4F}.Release|x86.ActiveCfg = Release|Any CPU
+		{A923155B-D958-46DE-953C-355A38B73494}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Debug|x86.ActiveCfg = Debug|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Debug|x86.Build.0 = Debug|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Release|Any CPU.ActiveCfg = Release|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Release|x86.ActiveCfg = Release|x86
+		{A923155B-D958-46DE-953C-355A38B73494}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
