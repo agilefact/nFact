@@ -75,7 +75,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\nFact.Engine\nFact.Engine.csproj">
       <Project>{0CC74E0C-95F1-4B78-AE54-32C98C807DC1}</Project>

@@ -15,7 +15,7 @@ namespace nFact.TestData
         private string _failureDir;
         private string _successDir;
 
-        public void Generate()
+        public string Generate()
         {
             var directory = Environment.CurrentDirectory;
             var templateDir = Path.Combine(directory, "TestRun");
@@ -28,7 +28,7 @@ namespace nFact.TestData
             CreateDirectory(dataDir);
             CreateDirectory(artifactsDir);
 
-            var testPackageName = "Project1";
+            var testPackageName = "SpecTests";
             var environment = "local";
 
             var testPackageArtifacts = Path.Combine(artifactsDir, testPackageName);
@@ -46,7 +46,7 @@ namespace nFact.TestData
 
             var projectsFile = Path.Combine(dataDir, "projects.xml");
             SpecStore.SaveArtifacts(_manager.Model, projectsFile);
-
+            return dataDir;
         }
 
         private void CreateTestResults(TestResult testResult, int totalTestRuns, IScript script, string testPackageArtifacts)
@@ -80,11 +80,44 @@ namespace nFact.TestData
                     break;
             }
 
-            var sourceDir = new DirectoryInfo(sourcePath);
-            foreach (var file in sourceDir.GetFiles())
+            DirectoryCopy(sourcePath, testRunDir, false);
+        }
+
+        public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            if (!dir.Exists)
             {
-                var destFile = Path.Combine(testRunDir, file.Name);
-                file.CopyTo(destFile);
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            // If the destination directory doesn't exist, create it. 
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location. 
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
             }
         }
 

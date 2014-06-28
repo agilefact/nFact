@@ -7,7 +7,7 @@ class App.Chart
 		json = $('#dataModel').html()
 		dataModel = jQuery.parseJSON(json)
 		spec = dataModel.spec
-		storyId = "12345"
+		storyId = "US39"
 		url = "/" + spec + "/story/" + storyId + "/chart?format=json"
 		this.getData(url, this.render)
 	
@@ -27,21 +27,26 @@ class App.Chart
 				alert('error occurred')
 			
 
-	render: (data) ->
-		series = data.series
-		data1 = []
-		$.each( series.points, ( index, pt ) ->
-			date = new Date(parseInt(pt.x.substr(6)))
-			data1.push({x: date, y: pt.y})
+	render: (jsonData) ->
+		chartData = []
+
+		$.each( jsonData.seriesArray, ( index, series ) ->
+			data = []
+			$.each( series.points, ( index, pt ) ->
+				date = new Date(parseInt(pt.x.substr(6)))
+				data.push({x: date, y: pt.y})
+			)
+			environment = series.environment
+			chartData.push({name: environment, data})
 		)
 
 		$("#chart-container").highcharts
 			title:
-				text: "Monthly Average Temperature"
+				text: "Story Test Automation"
 				x: -20 #center
 
 			subtitle:
-				text: "Source: WorldClimate.com"
+				text: jsonData.storyName
 				x: -20
 
 			xAxis:
@@ -53,8 +58,8 @@ class App.Chart
 						Highcharts.dateFormat('%a %d %b', this.value)
 
 			yAxis:
-				title: "My Title"
-				text: "Temperature (°C)"
+				min: 0
+				tickInterval: 1
 
 				plotLines: [
 					value: 0
@@ -62,18 +67,12 @@ class App.Chart
 					color: "#808080"
 				]
 
-			tooltip:
-				valueSuffix: "°C"
-
 			legend:
 				layout: "vertical"
 				align: "right"
 				verticalAlign: "middle"
 				borderWidth: 0
 
-			series: [
-				name: "local"
-				data: data1
-			]
+			series: chartData
 
 		

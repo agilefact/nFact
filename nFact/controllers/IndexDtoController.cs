@@ -47,35 +47,74 @@ namespace nFact.controllers
         {
             var results = GetProjectStoryResults(spec, id);
 
-            var local = results.Environments.First();
-            var series = new List<Point>();
-            foreach (var story in local.Stories)
+            
+            var data = new ChartData();
+            data.storyName = GetStoryName(results);
+
+            var seriesList = new List<Series>();
+            foreach (var environment in results.Environments)
             {
+                var series = new Series();
+                series.environment = environment.Name;
+
+                var story = environment.Stories.FirstOrDefault();
+                if (story == null)
+                    continue;
+
+                var dataPoints = new List<Point>();
+                int prevValue = 0;
                 foreach (var result in story.Results)
                 {
                     var value = 0;
                     if (result.Result == "Success")
                         value = 1;
-                    var pt = new Point(result.TestTime, value);
-                    series.Add(pt);
-                }
-            }
-            var data = new ChartData();
 
-            data.series = new Series();
-            data.series.points = series.ToArray();
+                    Point pt;
+                    if (value != prevValue)
+                    {
+                        pt = new Point(result.TestTime, prevValue);
+                        dataPoints.Add(pt);
+                    }
+
+                    pt = new Point(result.TestTime, value);
+                    dataPoints.Add(pt);
+
+                    prevValue = value;
+                }
+
+                series.points = dataPoints.ToArray();
+                seriesList.Add(series);
+            }
+
+
+            data.seriesArray = seriesList.ToArray();
 
             return data;
+        }
+
+        private string GetStoryName(Project results)
+        {
+            var env = results.Environments.FirstOrDefault();
+            if (env == null)
+                return null;
+
+            var story = env.Stories.FirstOrDefault();
+            if (story == null)
+                return null;
+
+            return story.Description;
         }
     }
 
     public class ChartData
     {
-        public Series series;
+        public string storyName;
+        public Series[] seriesArray;
     }
 
     public class Series
     {
+        public string environment;
         public Point[] points;
     }
 
