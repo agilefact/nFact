@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug\SpecTests.dll" total="1" errors="0" failures="0" not-run="0" inconclusive="1" ignored="0" skipped="0" invalid="0" date="2014-06-27" time="08:49:39">
+  <environment nunit-version="2.6.2.12296" clr-version="2.0.50727.3655" os-version="Microsoft Windows NT 5.1.2600 Service Pack 3" platform="Win32NT" cwd="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug" machine-name="MICHAELSMOLB29B" user="Administrator" user-domain="MICHAELSMOLB29B" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug\SpecTests.dll" executed="True" result="Inconclusive" success="False" time="12.125" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="SpecTests" executed="True" result="Inconclusive" success="False" time="12.109" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="Features" executed="True" result="Inconclusive" success="False" time="12.094" asserts="0">
+            <results>
+              <test-suite type="TestFixture" name="CustomerTransferSFundFeature" description="Customer Transfer's Fund" executed="True" result="Inconclusive" success="False" time="12.078" asserts="0">
+                <categories>
+                  <category name="rally{US39}" />
+                </categories>
+                <results>
+                  <test-case name="SpecTests.Features.CustomerTransferSFundFeature.ValidPayee" description="Valid Payee" executed="True" result="Inconclusive" success="False" time="11.688" asserts="0">
+                    <reason>
+                      <message><![CDATA[One or more step definitions are not implemented yet.
+  CustomerTransferSFundSteps.WhenHeEntersAsPayeeName("Jim")]]></message>
+                    </reason>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

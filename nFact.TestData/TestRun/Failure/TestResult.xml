@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug\SpecTests.dll" total="1" errors="1" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-06-27" time="08:45:48">
+  <environment nunit-version="2.6.2.12296" clr-version="2.0.50727.3655" os-version="Microsoft Windows NT 5.1.2600 Service Pack 3" platform="Win32NT" cwd="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug" machine-name="MICHAELSMOLB29B" user="Administrator" user-domain="MICHAELSMOLB29B" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="C:\dev\nFact\nFact\bin\Debug\projects\SpecTests\bin\debug\SpecTests.dll" executed="True" result="Failure" success="False" time="10.344" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="SpecTests" executed="True" result="Failure" success="False" time="10.328" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="Features" executed="True" result="Failure" success="False" time="10.328" asserts="0">
+            <results>
+              <test-suite type="TestFixture" name="CustomerTransferSFundFeature" description="Customer Transfer's Fund" executed="True" result="Failure" success="False" time="10.313" asserts="0">
+                <categories>
+                  <category name="rally{US39}" />
+                </categories>
+                <results>
+                  <test-case name="SpecTests.Features.CustomerTransferSFundFeature.ValidPayee" description="Valid Payee" executed="True" result="Error" success="False" time="10.000" asserts="0">
+                    <failure>
+                      <message><![CDATA[OpenQA.Selenium.NoSuchElementException : Could not find element by: By.Id: payee]]></message>
+                      <stack-trace><![CDATA[at OpenQA.Selenium.Support.PageObjects.WebElementProxy.get_WrappedElement()
+at OpenQA.Selenium.Support.PageObjects.WebElementProxy.SendKeys(String text)
+at SpecTests.Steps.CustomerTransferSFundSteps.WhenHeEntersAsPayeeName(String payeeName) in C:\dev\nFact\SpecTests\Steps\CustomerTransferSFundSteps.cs:line 26
+at lambda_method(Closure , IContextManager , String )
+at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan& duration)
+at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+at TechTalk.SpecFlow.TestRunner.CollectScenarioErrors()
+at SpecTests.Features.CustomerTransferSFundFeature.ScenarioCleanup() in C:\dev\nFact\SpecTests\Features\FundsTransfer.feature.cs:line 0
+at SpecTests.Features.CustomerTransferSFundFeature.ValidPayee() in c:\dev\nFact\SpecTests\Features\FundsTransfer.feature:line 13
+]]></stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
