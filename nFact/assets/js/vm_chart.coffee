@@ -55,7 +55,8 @@ class App.Chart
                 
 				labels: 
 					formatter: ->
-						Highcharts.dateFormat('%a %d %b', this.value)
+						Highcharts.dateFormat('%d %b', this.value)
+						Highcharts.dateFormat('%d %b', this.value)
 
 			yAxis:
 				min: 0

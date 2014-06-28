@@ -50,8 +50,11 @@ namespace nFact.controllers
             
             var data = new ChartData();
             data.storyName = GetStoryName(results);
+            var startDate = GetStartDate(results);
 
             var seriesList = new List<Series>();
+            var successHeight = 2;
+            var successVal = successHeight;
             foreach (var environment in results.Environments)
             {
                 var series = new Series();
@@ -62,15 +65,24 @@ namespace nFact.controllers
                     continue;
 
                 var dataPoints = new List<Point>();
-                int prevValue = 0;
+                int prevValue = successVal - successHeight;
+
+                Point pt;
+
+                // Initial Point
+                pt = new Point(startDate, prevValue, false);
+                dataPoints.Add(pt);
+
                 foreach (var result in story.Results)
                 {
-                    var value = 0;
-                    if (result.Result == "Success")
-                        value = 1;
+                    var day = result.TestTime.Date;
+                    RemovePreviousDate(day, dataPoints); // Remove any prev points for the same day
 
-                    Point pt;
-                    if (value != prevValue)
+                    var value = successVal - successHeight;
+                    if (result.Result == "Success")
+                        value = successVal;
+
+                    if (value != prevValue) // Add dummy point to display instant change
                     {
                         pt = new Point(result.TestTime, prevValue, false);
                         dataPoints.Add(pt);
@@ -82,6 +94,7 @@ namespace nFact.controllers
                     prevValue = value;
                 }
 
+                successVal += successHeight + 1;
                 series.points = dataPoints.ToArray();
                 seriesList.Add(series);
             }
@@ -90,6 +103,16 @@ namespace nFact.controllers
             data.seriesArray = seriesList.ToArray();
 
             return data;
+        }
+
+        private static void RemovePreviousDate(DateTime date, List<Point> dataPoints)
+        {
+            var prevTime = dataPoints.Where(p => p.x.Date == date);
+            if (!prevTime.Any()) return;
+            foreach (var point in prevTime.ToArray())
+            {
+                dataPoints.Remove(point);
+            }
         }
 
         private string GetStoryName(Project results)
@@ -103,6 +126,16 @@ namespace nFact.controllers
                 return null;
 
             return story.Description;
+        }
+
+        private DateTime GetStartDate(Project results)
+        {
+            var testTimes = from e in results.Environments
+                            from s in e.Stories
+                            from r in s.Results
+                            select r.TestTime;
+
+            return testTimes.Min();
         }
     }
 

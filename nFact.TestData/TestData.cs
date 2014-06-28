@@ -7,6 +7,13 @@ using nFact.Engine;
 
 namespace nFact.TestData
 {
+    public class EnvironmentSimulation
+    {
+        public string Name;
+        public int PendingAttempts;
+        public int FailureAttempts;
+        public int SuccessAttempts;
+    }
     public class TestData
     {
         DateTime _date = new DateTime(2014, 06, 1);
@@ -15,6 +22,8 @@ namespace nFact.TestData
         private string _failureDir;
         private string _successDir;
         private int _failureAfterSuccess;
+
+        private List<EnvironmentSimulation> environments;
 
         public string Generate()
         {
@@ -30,29 +39,38 @@ namespace nFact.TestData
             CreateDirectory(artifactsDir);
                 
             var testPackageName = "SpecTests";
-            var environment = "local";
 
             var testPackageArtifacts = Path.Combine(artifactsDir, testPackageName);
             CreateDirectory(testPackageArtifacts);
 
+            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "local");
+            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "BADev");
+            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "T1");
+            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "T4");
+            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "Staging");
+
+
+            Console.WriteLine("Failures after Success Count: " + _failureAfterSuccess);
+
+            var projectsFile = Path.Combine(dataDir, "projects.xml");
+            SpecStore.SaveArtifacts(_manager.Model, projectsFile);
+            return dataDir;
+        }
+
+        private void CreateEnvironmentResults(string testPackageArtifacts, string testPackageName, string environment)
+        {
             IScript script = new Test(testPackageName, environment);
 
             var pendingCount = GetRandom(1, 5);
             var failCount = GetRandom(3, 7);
             var successCount = GetRandom(8, 12);
 
-            CreateTestResults(TestResult.Pending, pendingCount, script, testPackageArtifacts);
-            CreateTestResults(TestResult.Failure, failCount, script, testPackageArtifacts);
+            if (environment == "local")
+            {
+                CreateTestResults(TestResult.Pending, pendingCount, script, testPackageArtifacts);
+                CreateTestResults(TestResult.Failure, failCount, script, testPackageArtifacts);
+            }
             CreateTestResults(TestResult.Success, successCount, script, testPackageArtifacts);
-
-            Console.WriteLine("Pending Count: " + pendingCount);
-            Console.WriteLine("Failure Count: " + failCount);
-            Console.WriteLine("Success Count: " + successCount);
-            Console.WriteLine("Failures after Success Count: " + _failureAfterSuccess);
-
-            var projectsFile = Path.Combine(dataDir, "projects.xml");
-            SpecStore.SaveArtifacts(_manager.Model, projectsFile);
-            return dataDir;
         }
 
         private void CreateTestResults(TestResult testResult, int totalTestRuns, IScript script, string testPackageArtifacts)
@@ -86,20 +104,19 @@ namespace nFact.TestData
             switch (result)
             {
                 case TestResult.Pending:
-                    Console.WriteLine("Pending");
                     sourcePath = _pendingDir;
                     break;
                 case TestResult.Failure:
-                    Console.WriteLine("Failure");
                     sourcePath = _failureDir;
                     break;
                 case TestResult.Success:
-                    Console.WriteLine("Success");
                     sourcePath = _successDir;
                     break;
             }
 
-            DirectoryCopy(sourcePath, testRunDir, false);
+            Console.WriteLine("{0}: {1}", script.Environment, result);
+
+            DirectoryCopy(sourcePath, testRunDir, false);   
         }
 
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
