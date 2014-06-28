@@ -14,6 +14,7 @@ namespace nFact.TestData
         private string _pendingDir;
         private string _failureDir;
         private string _successDir;
+        private int _failureAfterSuccess;
 
         public string Generate()
         {
@@ -27,7 +28,7 @@ namespace nFact.TestData
             var artifactsDir = Path.Combine(dataDir, "Artifacts");
             CreateDirectory(dataDir);
             CreateDirectory(artifactsDir);
-
+                
             var testPackageName = "SpecTests";
             var environment = "local";
 
@@ -38,11 +39,16 @@ namespace nFact.TestData
 
             var pendingCount = GetRandom(1, 5);
             var failCount = GetRandom(3, 7);
-            var successCount = GetRandom(5, 8);
+            var successCount = GetRandom(8, 12);
 
             CreateTestResults(TestResult.Pending, pendingCount, script, testPackageArtifacts);
             CreateTestResults(TestResult.Failure, failCount, script, testPackageArtifacts);
             CreateTestResults(TestResult.Success, successCount, script, testPackageArtifacts);
+
+            Console.WriteLine("Pending Count: " + pendingCount);
+            Console.WriteLine("Failure Count: " + failCount);
+            Console.WriteLine("Success Count: " + successCount);
+            Console.WriteLine("Failures after Success Count: " + _failureAfterSuccess);
 
             var projectsFile = Path.Combine(dataDir, "projects.xml");
             SpecStore.SaveArtifacts(_manager.Model, projectsFile);
@@ -67,15 +73,28 @@ namespace nFact.TestData
             CreateDirectory(testRunDir);
 
             string sourcePath = _pendingDir;
+            if (result == TestResult.Success)
+            {
+                var odds = GetRandom(0, 9);
+                if (odds < 4)
+                {
+                    result = TestResult.Failure;
+                    _failureAfterSuccess++;
+                }
+            }
+
             switch (result)
             {
                 case TestResult.Pending:
+                    Console.WriteLine("Pending");
                     sourcePath = _pendingDir;
                     break;
                 case TestResult.Failure:
+                    Console.WriteLine("Failure");
                     sourcePath = _failureDir;
                     break;
                 case TestResult.Success:
+                    Console.WriteLine("Success");
                     sourcePath = _successDir;
                     break;
             }

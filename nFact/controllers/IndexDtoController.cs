@@ -72,7 +72,7 @@ namespace nFact.controllers
                     Point pt;
                     if (value != prevValue)
                     {
-                        pt = new Point(result.TestTime, prevValue);
+                        pt = new Point(result.TestTime, prevValue, false);
                         dataPoints.Add(pt);
                     }
 
@@ -118,14 +118,20 @@ namespace nFact.controllers
         public Point[] points;
     }
 
-    public class Point 
+    public class Point
     {
-        public Point(DateTime x, int y)
+        public Point(DateTime x, int y) : this(x, y, true)
+        {
+        }
+
+        public Point(DateTime x, int y, bool enabled)
         {
             this.x = x;
             this.y = y;
+            this.enabled = enabled;
         }
         public DateTime x;
         public int y;
+        public bool enabled = true;
     }
 }

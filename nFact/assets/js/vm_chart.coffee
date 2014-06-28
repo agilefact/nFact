@@ -34,7 +34,7 @@ class App.Chart
 			data = []
 			$.each( series.points, ( index, pt ) ->
 				date = new Date(parseInt(pt.x.substr(6)))
-				data.push({x: date, y: pt.y})
+				data.push({x: date, y: pt.y, marker: {enabled: pt.enabled}})
 			)
 			environment = series.environment
 			chartData.push({name: environment, data})
@@ -65,7 +65,7 @@ class App.Chart
 					value: 0
 					width: 1
 					color: "#808080"
-				]
+				]		
 
 			legend:
 				layout: "vertical"
