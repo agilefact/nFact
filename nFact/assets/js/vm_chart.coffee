@@ -35,12 +35,19 @@ class App.Chart
 			data = []
 			$.each( series.points, ( index, pt ) ->
 				date = new Date(parseInt(pt.x.substr(6)))
+				
+				displayLabel = ->
+					return environment
+
+				dataLabels = {}
+				if index == 0
+					dataLabels = {enabled: true, formatter: displayLabel }
 
 				marker = {enabled: pt.enabled, symbol: 'circle'}
 				if pt.accepted
 					marker = {enabled: pt.enabled, symbol: 'square', radius: 5}
 
-				data.push({x: date, y: pt.y, marker: marker})
+				data.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels})
 			)
 			environment = series.environment
 			chartData.push({name: environment, legendIndex: index, data})
@@ -67,12 +74,9 @@ class App.Chart
 			yAxis:
 				min: 0
 				tickInterval: 1
-
-				plotLines: [
-					value: 0
-					width: 1
-					color: "#808080"
-				]		
+				gridLineWidth: 0
+				labels:
+					enabled: false	
 
 			legend:
 				layout: "vertical"
