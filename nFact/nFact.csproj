@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="controllers\ChartController.cs" />
     <Compile Include="controllers\IndexController.cs" />
     <Compile Include="controllers\ConfigController.cs" />
     <Compile Include="controllers\IndexDtoController.cs" />

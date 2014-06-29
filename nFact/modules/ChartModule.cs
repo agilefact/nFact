@@ -1,6 +1,5 @@
 ﻿using System;
 using Nancy;
-using nFact.Engine.Model.DataTransfer;
 using nFact.controllers;
 using nFact.viewModels;
 
@@ -8,7 +7,7 @@ namespace nFact.modules
 {
     public class ChartModule : NancyModule
     {
-        readonly IndexDtoController _dtoController = new IndexDtoController();
+        readonly ChartController _controller = new ChartController();
 
         public ChartModule()
         {
@@ -29,7 +28,7 @@ namespace nFact.modules
         private dynamic GetStoryData(string spec, string id)
         {
             string format = Request.Query.format;
-            var result = _dtoController.GetStoryChartData(spec, id);
+            var result = _controller.GetStoryChartData(spec, id);
 
             return ResultResponse(format, result);
         }

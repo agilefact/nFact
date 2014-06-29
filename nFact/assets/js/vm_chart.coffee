@@ -9,9 +9,9 @@ class App.Chart
 		spec = dataModel.spec
 		storyId = "US39"
 		url = "/" + spec + "/story/" + storyId + "/chart?format=json"
-		this.getData(url, this.render)
+		this.getData(url, this.render, this)
 	
-	getData: (url, callback) ->
+	getData: (url, callback, scope) ->
 		$.ajax
 			type: "GET",
 			url: url,
@@ -21,40 +21,83 @@ class App.Chart
 			cache: false,
 			success: (result) ->
 				data = JSON.parse(result)
-				callback(data)
+				callback(data, scope)
 			,
 			error: (XMLHttpRequest, textStatus, errorThrown) -> 
 				alert('error occurred')
 			
+	createLabels: (environment, index) ->
+		displayLabel = ->
+			return environment
 
-	render: (jsonData) ->
+		if index == 0
+			{enabled: true, formatter: displayLabel }
+		else
+			{}
+
+	createMarker: (pt) ->
+		if pt.accepted
+			marker = {enabled: pt.enabled, symbol: 'square', radius: 5}
+		else
+			{enabled: pt.enabled, symbol: 'circle'}
+
+	render: (jsonData, scope) ->
+		self = scope
 		chartData = []
 		
 		index = 0	
+		barData = []
 		$.each( jsonData.seriesArray, ( index, series ) ->
-			data = []
+			lineData = []
+			barCategories = []
+			
+			environment = series.environment
+			barCategories.push(environment)
+
 			$.each( series.points, ( index, pt ) ->
 				date = new Date(parseInt(pt.x.substr(6)))
-				
-				displayLabel = ->
-					return environment
 
-				dataLabels = {}
-				if index == 0
-					dataLabels = {enabled: true, formatter: displayLabel }
+				dataLabels = self.createLabels(environment, index)
+				marker = self.createMarker(pt)
 
-				marker = {enabled: pt.enabled, symbol: 'circle'}
 				if pt.accepted
-					marker = {enabled: pt.enabled, symbol: 'square', radius: 5}
+					barData.push({name: environment, data: [index]})
 
-				data.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels})
+				lineData.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels})
 			)
-			environment = series.environment
-			chartData.push({name: environment, legendIndex: index, data})
+			chartData.push({name: environment, legendIndex: index, data: lineData})
 			index++;
 		)
 
-		$("#chart-container").highcharts
+		$("#chart-bar").highcharts
+			chart:
+				type: 'bar'
+
+			title:
+				text: "Story Test Automation"
+				x: -20 #center
+
+			subtitle:
+				text: jsonData.storyName
+				x: -20
+
+			xAxis:
+				categories: ['US39']
+
+			yAxis: 
+				stackLabels: 
+					enabled: true
+
+			plotOptions:
+				series:
+					stacking: 'normal'
+
+			series: barData
+
+
+
+
+		$("#chart-line").highcharts
 			title:
 				text: "Story Test Automation"
 				x: -20 #center
@@ -72,6 +115,8 @@ class App.Chart
 						Highcharts.dateFormat('%d %b', this.value)
 
 			yAxis:
+				title: 
+					text: 'Environments'
 				min: 0
 				tickInterval: 1
 				gridLineWidth: 0
