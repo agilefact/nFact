@@ -13,6 +13,34 @@ namespace nFact.TestData
         public int PendingAttempts;
         public int FailureAttempts;
         public int SuccessAttempts;
+        public bool Accepted;
+        public IScript Script;
+        public EnvironmentSimulation PrevEnvironment;
+        public EnvironmentSimulation NextEnvironment;
+        public TestResult LastResult;
+        public bool IntegrationEnv;
+
+        public static EnvironmentSimulation Create(string package, string environment, bool pending, bool integration)
+        {
+            var env = new EnvironmentSimulation();
+            env.Name = environment;
+            env.Script = new Test(package, environment);
+            if (pending)
+                env.PendingAttempts = TestData.GetRandom(1, 2);
+
+            if (integration)
+            {
+                env.FailureAttempts = TestData.GetRandom(0, 1);
+                env.SuccessAttempts = 1;
+            }
+            else
+            {
+                env.FailureAttempts = TestData.GetRandom(1, 5);
+                env.SuccessAttempts = TestData.GetRandom(1, 3);
+            }
+
+            return env;
+        }
     }
     public class TestData
     {
@@ -23,7 +51,9 @@ namespace nFact.TestData
         private string _successDir;
         private int _failureAfterSuccess;
 
-        private List<EnvironmentSimulation> environments;
+        private List<EnvironmentSimulation> _environments = new List<EnvironmentSimulation>();
+        private string _testArtifacts;
+        private EnvironmentSimulation _currentEnvironment;
 
         public string Generate()
         {
@@ -38,16 +68,17 @@ namespace nFact.TestData
             CreateDirectory(dataDir);
             CreateDirectory(artifactsDir);
                 
-            var testPackageName = "SpecTests";
+            var packageName = "SpecTests";
 
-            var testPackageArtifacts = Path.Combine(artifactsDir, testPackageName);
-            CreateDirectory(testPackageArtifacts);
+            _testArtifacts = Path.Combine(artifactsDir, packageName);
+            CreateDirectory(_testArtifacts);
 
-            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "local");
-            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "BADev");
-            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "T1");
-            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "T4");
-            CreateEnvironmentResults(testPackageArtifacts, testPackageName, "Staging");
+            var local = SetupSimulation(packageName);
+
+            while (!AllEnvironmentsAccepted())
+            {
+                RunTestSimulation(local);
+            }
 
 
             Console.WriteLine("Failures after Success Count: " + _failureAfterSuccess);
@@ -57,49 +88,141 @@ namespace nFact.TestData
             return dataDir;
         }
 
-        private void CreateEnvironmentResults(string testPackageArtifacts, string testPackageName, string environment)
+        private void RunTestSimulation(EnvironmentSimulation environment)
         {
-            IScript script = new Test(testPackageName, environment);
-
-            var pendingCount = GetRandom(1, 5);
-            var failCount = GetRandom(3, 7);
-            var successCount = GetRandom(8, 12);
-
-            if (environment == "local")
+            while (environment != null)
             {
-                CreateTestResults(TestResult.Pending, pendingCount, script, testPackageArtifacts);
-                CreateTestResults(TestResult.Failure, failCount, script, testPackageArtifacts);
-            }
-            CreateTestResults(TestResult.Success, successCount, script, testPackageArtifacts);
-        }
+                Simulate(environment);
 
-        private void CreateTestResults(TestResult testResult, int totalTestRuns, IScript script, string testPackageArtifacts)
-        {
-            for (int i = 0; i < totalTestRuns; i++)
-            {
-                CreateTestRun(script, testPackageArtifacts, testResult);
+                environment = environment.NextEnvironment;
             }
         }
 
-        private void CreateTestRun(IScript script, string artifactsDir, TestResult result)
+        private void Simulate(EnvironmentSimulation environment)
         {
+            string testResult = null;
+            _currentEnvironment = environment;
+            GenerateTestDate();
+            while (environment.PendingAttempts > 0)
+            {
+                CreateTestRun(environment, TestResult.Pending);
+                environment.PendingAttempts--;
+
+                GenerateTestDate();
+            }
+
+            while (environment.FailureAttempts > 0)
+            {
+                CreateTestRun(environment, TestResult.Failure);
+                environment.FailureAttempts--;
+
+                GenerateTestDate();
+                //SimulateAccepted(environment.PrevEnvironment, date);
+            }
+            
+            while (environment.SuccessAttempts > 0)
+            {
+                
+                var prevEnv = environment.PrevEnvironment;
+
+                SimulateAccepted(prevEnv);
+                if (AllPrevEnvironmentsPassed(environment))
+                {
+                    testResult = CreateTestRun(environment, TestResult.Success);
+                    environment.SuccessAttempts--;
+                    GenerateTestDate();
+                }
+                else
+                {
+                    GenerateTestDate(true);
+                }
+            }
+
+            TestResultsManager.AcceptStoryResult("US39", testResult);
+
+            Console.WriteLine("{0} Accepted", environment.Name);
+            environment.Accepted = true;
+        }
+
+        private bool AllPrevEnvironmentsPassed(EnvironmentSimulation environment)
+        {
+            var prev = environment.PrevEnvironment;
+            while (prev != null)
+            {
+                if (prev.LastResult != TestResult.Success)
+                    return false;
+
+                prev = prev.PrevEnvironment;
+            }
+
+            return true;
+        }
+
+        private void SimulateAccepted(EnvironmentSimulation environment)
+        {
+            if (environment == null)
+                return;
+
+            if (!environment.Accepted)
+                return;
+
+            var odds = GetRandom(0, 9);
+            var result = TestResult.Success;
+            if (odds < 3)
+            {
+                result = TestResult.Failure;
+                _failureAfterSuccess++;
+            }
+            CreateTestRun(environment, result);
+
+            SimulateAccepted(environment.PrevEnvironment);
+        }
+
+        private bool AllEnvironmentsAccepted()
+        {
+            return _environments.All(environment => environment.Accepted);
+        }
+
+        private EnvironmentSimulation SetupSimulation(string package)
+        {
+            var local = EnvironmentSimulation.Create(package, "local", true, false);
+            var badev = EnvironmentSimulation.Create(package, "BADev", false, false);
+            var t1 = EnvironmentSimulation.Create(package, "T1", false, true);
+            var t2 = EnvironmentSimulation.Create(package, "T2", false, true);
+            var stage = EnvironmentSimulation.Create(package, "Staging", false, true);
+            
+            local.NextEnvironment = badev;
+            badev.PrevEnvironment = local;
+            badev.NextEnvironment = t1;
+            t1.PrevEnvironment = badev;
+            t1.NextEnvironment = t2;
+            t2.PrevEnvironment = t1;
+            t2.NextEnvironment = stage;
+            stage.PrevEnvironment = t2;
+
+            _environments.Add(local);
+            _environments.Add(badev);
+
+            return local;
+        }
+
+        private string CreateTestRun(EnvironmentSimulation env, TestResult result)
+        {
+            return CreateTestRun(env, result, _date);
+        }
+
+        private string CreateTestRun(EnvironmentSimulation env, TestResult result, DateTime date)
+        {
+            var script = env.Script;
+
             var artifacts = _manager.CreateArtifacts(script);
-            artifacts.Date = GenerateTestDate();
+            artifacts.Date = date;
             artifacts.RecordTestComplete();
 
-            var testRunDir = Path.Combine(artifactsDir, artifacts.ArtifactsVersion);
+            var testRunDir = Path.Combine(_testArtifacts, artifacts.ArtifactsVersion);
             CreateDirectory(testRunDir);
 
             string sourcePath = _pendingDir;
-            if (result == TestResult.Success)
-            {
-                var odds = GetRandom(0, 9);
-                if (odds < 4)
-                {
-                    result = TestResult.Failure;
-                    _failureAfterSuccess++;
-                }
-            }
 
             switch (result)
             {
@@ -114,9 +237,14 @@ namespace nFact.TestData
                     break;
             }
 
-            Console.WriteLine("{0}: {1}", script.Environment, result);
+            env.LastResult = result;
 
-            DirectoryCopy(sourcePath, testRunDir, false);   
+            Console.WriteLine("{0}: {1} {2}", script.Environment, date.Day, result);
+
+            DirectoryCopy(sourcePath, testRunDir, false);
+
+            var testResult = Path.Combine(testRunDir, "TestResult.xml");
+            return testResult;
         }
 
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -167,18 +295,26 @@ namespace nFact.TestData
             Directory.CreateDirectory(dir);
         }
 
-        public int GetRandom(int lower, int upper)
+        public static int GetRandom(int lower, int upper)
         {
             var rnd = new Random();
             return rnd.Next(lower, upper);
         }
 
-        public DateTime GenerateTestDate()
+        public void GenerateTestDate()
         {
-            _date = _date.AddDays(1);
-            var rnd = new Random();
-            int hour = rnd.Next(9, 18);
-            return _date.AddHours(hour);
+            GenerateTestDate(_currentEnvironment.IntegrationEnv);
+        }
+
+        public void GenerateTestDate(bool nextDay)
+        {
+            var days = GetRandom(1, 5);
+            if (nextDay)
+                days = 1;
+
+            _date = _date.AddDays(days);
+            int hour = GetRandom(9, 18);
+            _date.AddHours(hour);
         }
     }
 

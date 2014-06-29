@@ -29,15 +29,22 @@ class App.Chart
 
 	render: (jsonData) ->
 		chartData = []
-
+		
+		index = 0	
 		$.each( jsonData.seriesArray, ( index, series ) ->
 			data = []
 			$.each( series.points, ( index, pt ) ->
 				date = new Date(parseInt(pt.x.substr(6)))
-				data.push({x: date, y: pt.y, marker: {enabled: pt.enabled}})
+
+				marker = {enabled: pt.enabled, symbol: 'circle'}
+				if pt.accepted
+					marker = {enabled: pt.enabled, symbol: 'square', radius: 5}
+
+				data.push({x: date, y: pt.y, marker: marker})
 			)
 			environment = series.environment
-			chartData.push({name: environment, data})
+			chartData.push({name: environment, legendIndex: index, data})
+			index++;
 		)
 
 		$("#chart-container").highcharts
@@ -51,11 +58,10 @@ class App.Chart
 
 			xAxis:
 				type: 'datetime'
-				tickInterval: 24 * 3600 * 1000
+				minTickInterval: 24 * 3600 * 1000
                 
 				labels: 
 					formatter: ->
-						Highcharts.dateFormat('%d %b', this.value)
 						Highcharts.dateFormat('%d %b', this.value)
 
 			yAxis:
@@ -73,7 +79,14 @@ class App.Chart
 				align: "right"
 				verticalAlign: "middle"
 				borderWidth: 0
+				reversed: true
 
+			plotOptions:
+				line:
+					marker:
+						symbol: 'circle'
+					
+					
 			series: chartData
 
 		

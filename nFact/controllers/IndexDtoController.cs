@@ -89,6 +89,9 @@ namespace nFact.controllers
                     }
 
                     pt = new Point(result.TestTime, value);
+                    if (result.Accepted)
+                        pt.accepted = result.Accepted;
+
                     dataPoints.Add(pt);
 
                     prevValue = value;
@@ -166,5 +169,6 @@ namespace nFact.controllers
         public DateTime x;
         public int y;
         public bool enabled = true;
+        public bool accepted;
     }
 }
