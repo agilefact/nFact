@@ -30,6 +30,7 @@ namespace nFact.Engine.Model.DataTransfer
     {
         public string Name;
         public Story[] Stories;
+        public StoryResult[] Results;
     }
 
     public class Story
@@ -38,8 +39,9 @@ namespace nFact.Engine.Model.DataTransfer
         public string Description;
         public string Id;
         public StoryResult[] Results;
+        public Environment[] Environments;
     }
-
+    
     public class StoryResult
     {
         public int TestRun;
@@ -49,4 +51,4 @@ namespace nFact.Engine.Model.DataTransfer
         public double DurationSecs;
         public bool Accepted;
     }
-}
+ }

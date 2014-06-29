@@ -7,10 +7,22 @@ namespace nFact.controllers
 {
     public class ChartController : IndexDtoController
     {
+        public StoryCycleTime GetStoryCycleTime(string spec, string id)
+        {
+            var results = GetProjectStoryResults(spec, id);
+            foreach (var environment in results.Environments)
+            {
+                foreach (var story in environment.Stories)
+                {
+                    
+                }
+            }
+            return null;
+        }
+
         public ChartData GetStoryChartData(string spec, string id)
         {
             var results = GetProjectStoryResults(spec, id);
-
 
             var data = new ChartData();
             data.storyName = GetStoryName(results);
@@ -104,6 +116,18 @@ namespace nFact.controllers
 
             return testTimes.Min();
         }
+    }
+
+    public class StoryCycleTime
+    {
+        public string[] story;
+        public CycleTime[] environmentCycleTime;
+    }
+
+    public class CycleTime
+    {
+        public string name;
+        public int days;
     }
 
     public class ChartData

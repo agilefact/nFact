@@ -83,7 +83,8 @@ class App.Chart
 
 		$("#chart-bar").highcharts
 			chart:
-				type: 'bar'
+				type: 'column',
+				inverted: true
 
 			title:
 				text: "Story Test Automation"
@@ -97,13 +98,12 @@ class App.Chart
 				categories: ['US39']
 
 			yAxis:
+				#type: 'datetime'
 				min:  minDate
-				type: 'datetime'
-
-
+						
 
 			series: barData
-
+			
 
 
 
