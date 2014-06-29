@@ -8,8 +8,10 @@ class App.Chart
 		dataModel = jQuery.parseJSON(json)
 		spec = dataModel.spec
 		storyId = "US39"
-		url = "/" + spec + "/story/" + storyId + "/chart?format=json"
-		this.getData(url, this.render, this)
+		urlChart = "/" + spec + "/story/" + storyId + "/chart?format=json"
+		urlBar = "/" + spec + "/story/" + storyId + "/cycle?format=json"
+		this.getData(urlChart, this.render, this)
+		this.getData(urlBar, this.renderBar, this)
 	
 	getData: (url, callback, scope) ->
 		$.ajax
@@ -47,6 +49,57 @@ class App.Chart
 		day = date.getDate()
 		Date.UTC(year, month, day)
 
+	renderBar: (jsonData, scope) ->
+		self = scope
+		barData = []
+		maxDays = 0
+		$.each( jsonData.environmentCycleTime, ( index, cycle ) ->	
+			barData.push({name: cycle.name, data: [cycle.days]})
+			maxDays += cycle.days
+		)
+			
+		$.each( barData, ( i, data ) ->	
+			data.index = barData.length - 1 - i
+			data.legendIndex = i
+		)		
+
+		$("#chart-bar").highcharts
+			chart:
+				type: 'bar'
+
+			title:
+				text: "Story Test Automation"
+				x: -20 #center
+
+			subtitle:
+				text: jsonData.storyName
+				x: -20
+
+			yAxis:
+				title: 
+					text: 'Days'
+				max: maxDays
+				endOnTick: false
+				opposite: true
+
+			xAxis:
+				categories: ['US39']
+			
+			plotOptions:
+				bar:
+					stacking: 'normal'
+					pointWidth: 20				
+
+			series: barData
+
+			legend:
+				layout: "vertical"
+				align: "right"
+				verticalAlign: "middle"
+				borderWidth: 0
+			
+
+		
 	render: (jsonData, scope) ->
 		self = scope
 		chartData = []
@@ -78,44 +131,10 @@ class App.Chart
 			chartData.push({name: environment, legendIndex: index, data: lineData})
 			index++;
 		)
-
-
-
-		$("#chart-bar").highcharts
-			chart:
-				type: 'column',
-				inverted: true
-
-			title:
-				text: "Story Test Automation"
-				x: -20 #center
-
-			subtitle:
-				text: jsonData.storyName
-				x: -20
-
-			xAxis:
-				categories: ['US39']
-
-			yAxis:
-				#type: 'datetime'
-				min:  minDate
-						
-
-			series: barData
-			
-
-
-
+		
 		$("#chart-line").highcharts
 			title:
-				text: "Story Test Automation"
-				x: -20 #center
-
-			subtitle:
-				text: jsonData.storyName
-				x: -20
-
+				text: ""
 			xAxis:
 				type: 'datetime'
 				minTickInterval: 24 * 3600 * 1000

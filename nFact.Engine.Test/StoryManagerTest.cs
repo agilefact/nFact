@@ -87,7 +87,7 @@ namespace nFact.Engine.Test
             a3.RecordTestComplete();
 
             var manager = new StoryManager();
-            var results = manager.GetProjectStoryResults(project, "1111");
+            var results = manager.GetResultsByEnvironment(project, "1111");
             var local = results.Environments[0];
             var uat = results.Environments[1];
             var localStory = local.Stories[0];
@@ -117,7 +117,7 @@ namespace nFact.Engine.Test
             a3.RecordTestComplete();
 
             var manager = new StoryManager();
-            var results = manager.GetProjectStoryResults(project);
+            var results = manager.GetResultsByEnvironment(project);
             
             var local = results.Environments[0];
             var uat = results.Environments[1];

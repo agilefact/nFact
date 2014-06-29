@@ -12,7 +12,7 @@ namespace nFact.Engine
     {
         public Project GetCurrentProjectStoryResults(Model.Project project)
         {
-            var projectResults = GetProjectStoryResults(project);
+            var projectResults = GetResultsByEnvironment(project);
             var environments = from e in projectResults.Environments
                                select new Environment
                                {
@@ -29,7 +29,7 @@ namespace nFact.Engine
 
         public Project GetCurrentProjectStoryResults(Model.Project project, string storyId)
         {
-            var projectResults = GetProjectStoryResults(project);
+            var projectResults = GetResultsByEnvironment(project);
             var environments = from e in projectResults.Environments
                                select new Environment
                                {
@@ -131,9 +131,23 @@ namespace nFact.Engine
             return story.Accepted;
         }
 
-        public Project GetProjectStoryResults(Model.Project project, string storyId)
+        public Project GetResultsByStory(Model.Project project, string storyId)
         {
-            var projectResults = GetProjectStoryResults(project);
+            var projectResults = GetResultsByStory(project);
+            var stories = from s in projectResults.Stories
+                          where s.Id == storyId
+                          select s;
+
+            return new Project
+            {
+                Name = project.Name,
+                Stories = stories.ToArray()
+            };
+        }
+
+        public Project GetResultsByEnvironment(Model.Project project, string storyId)
+        {
+            var projectResults = GetResultsByEnvironment(project);
             var environments = from e in projectResults.Environments
                                select new Environment
                                {
@@ -149,16 +163,36 @@ namespace nFact.Engine
             };
         }
 
-        public Project GetProjectStoryResults(Model.Project project)
+        public Project GetResultsByStory(Model.Project project)
+        {
+            var storyResults = GetStoryResults(project);
+            var stories = from r in storyResults   
+                               group r by r.Id
+                                   into s
+                                   select new Story
+                                   {
+                                       Id = s.Key,
+                                       Name = s.Last().Name,
+                                       Description = s.Last().Description,
+                                       Environments = GetEnvironmentsByStory(s)
+                                   };
+            return new Project
+            {
+                Name = project.Name,
+                Stories = stories.ToArray()
+            };
+        }
+
+        public Project GetResultsByEnvironment(Model.Project project)
         {
             var storyResults = GetStoryResults(project);
             var environments = from r in storyResults
                                group r by r.Environment
-                                   into environemnts
+                                   into e
                                    select new Environment
                                    {
-                                       Name = environemnts.Key,
-                                       Stories = GetStories(environemnts)
+                                       Name = e.Key,
+                                       Stories = GetStoriesByEnvironment(e)
                                    };
             return new Project
             {
@@ -167,7 +201,20 @@ namespace nFact.Engine
             };
         }
 
-        private static Story[] GetStories(IEnumerable<Model.DataTransfer.Flat.StoryResult> environments)
+        private static Environment[] GetEnvironmentsByStory(IEnumerable<Model.DataTransfer.Flat.StoryResult> stories)
+        {
+            var results = from s in stories
+                          group s by s.Environment into e
+                          select new Environment
+                          {
+                              Name = e.Key,
+                              Results = GetStoryResults(e)
+                          };
+
+            return results.ToArray();
+        }
+
+        private static Story[] GetStoriesByEnvironment(IEnumerable<Model.DataTransfer.Flat.StoryResult> environments)
         {
             var results = from e in environments
                           group e by e.Id into stories
@@ -198,7 +245,7 @@ namespace nFact.Engine
             return results.ToArray();
         }
 
-        private Model.DataTransfer.Flat.StoryResult[] GetStoryResults(Model.Project project)
+        public Model.DataTransfer.Flat.StoryResult[] GetStoryResults(Model.Project project)
         {
             var results = from e in project.TestEnvironments.Values
                           from a in e.Artifacts

@@ -13,6 +13,7 @@ namespace nFact.modules
         {
             Get["/{spec}/chart"] = p => View["charts/story", BuildViewModel(p.spec)];
             Get["/{spec}/story/{id}/chart"] = p => GetStoryData(p.spec, p.id);
+            Get["/{spec}/story/{id}/cycle"] = p => GetStoryCycleData(p.spec, p.id);
         }
 
         private ChartViewModel BuildViewModel(string spec)
@@ -33,7 +34,15 @@ namespace nFact.modules
             return ResultResponse(format, result);
         }
 
-        private dynamic ResultResponse(string format, ChartData result)
+        private dynamic GetStoryCycleData(string spec, string id)
+        {
+            string format = Request.Query.format;
+            var result = _controller.GetStoryCycleTime(spec, id);
+
+            return ResultResponse(format, result);
+        }
+
+        private dynamic ResultResponse<T>(string format, T result)
         {
             if (string.IsNullOrEmpty(format))
                 return HttpStatusCode.BadRequest;

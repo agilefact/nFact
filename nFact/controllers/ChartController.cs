@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using nFact.Engine;
 using nFact.Engine.Model.DataTransfer;
 
 namespace nFact.controllers
@@ -9,20 +10,59 @@ namespace nFact.controllers
     {
         public StoryCycleTime GetStoryCycleTime(string spec, string id)
         {
-            var results = GetProjectStoryResults(spec, id);
-            foreach (var environment in results.Environments)
+            var results = GetResultsByStory(spec, id);
+            var storyIds = new List<string>();
+            var cycles = new List<CycleTime>();
+
+            var storyName = string.Empty;
+            foreach (var story in results.Stories)
             {
-                foreach (var story in environment.Stories)
+                storyName = story.Description;
+                storyIds.Add(story.Id);
+
+                var testRuns = from e in story.Environments
+                               let acceptedDate = e.Results.Where(r=> r.Accepted).Max(r => r.TestTime)
+                               from r in e.Results
+                               where r.Accepted && r.TestTime == acceptedDate
+                               orderby r.TestRun
+                               select new {Environment = e.Name, r};
+
+                var firstRunNum = story.Environments.SelectMany(r => r.Results).Min(r => r.TestRun);
+                var firstRun = story.Environments.SelectMany(r => r.Results).Single(r => r.TestRun == firstRunNum); 
+
+                var startDate = firstRun.TestTime;
+                var prevDate = startDate;
+                foreach (var testRun in testRuns)
                 {
-                    
+
+                    var environment = testRun.Environment;
+                    var testResult = testRun.r;
+
+                    var endDate = testResult.TestTime;
+                    var diff = endDate.Subtract(prevDate);
+
+                    var cycle = new CycleTime {name = environment};
+                    cycle.start = prevDate;
+                    cycle.end = endDate;
+                    cycle.days = diff.Days;
+                    cycles.Add(cycle);
+
+                    prevDate = endDate;
                 }
+
             }
-            return null;
+
+            return new StoryCycleTime
+                       {
+                           storyName = storyName,
+                           stories = storyIds.ToArray(),
+                           environmentCycleTime = cycles.ToArray()
+                       };
         }
 
         public ChartData GetStoryChartData(string spec, string id)
         {
-            var results = GetProjectStoryResults(spec, id);
+            var results = GetResultsByEnvironment(spec, id);
 
             var data = new ChartData();
             data.storyName = GetStoryName(results);
@@ -120,7 +160,8 @@ namespace nFact.controllers
 
     public class StoryCycleTime
     {
-        public string[] story;
+        public string storyName;
+        public string[] stories;
         public CycleTime[] environmentCycleTime;
     }
 
@@ -128,6 +169,8 @@ namespace nFact.controllers
     {
         public string name;
         public int days;
+        public DateTime start;
+        public DateTime end;
     }
 
     public class ChartData

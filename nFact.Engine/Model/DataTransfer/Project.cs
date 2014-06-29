@@ -24,6 +24,7 @@ namespace nFact.Engine.Model.DataTransfer
     {
         public string Name;
         public Environment[] Environments;
+        public Story[] Stories;
     }
 
     public class Environment
