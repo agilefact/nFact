@@ -41,12 +41,19 @@ class App.Chart
 		else
 			{enabled: pt.enabled, symbol: 'circle'}
 
+	getDate: (date) ->
+		year = date.getFullYear()
+		month = date.getMonth()
+		day = date.getDate()
+		Date.UTC(year, month, day)
+
 	render: (jsonData, scope) ->
 		self = scope
 		chartData = []
 		
 		index = 0	
 		barData = []
+		minDate = null
 		$.each( jsonData.seriesArray, ( index, series ) ->
 			lineData = []
 			barCategories = []
@@ -56,18 +63,23 @@ class App.Chart
 
 			$.each( series.points, ( index, pt ) ->
 				date = new Date(parseInt(pt.x.substr(6)))
+				if minDate == null
+					minDate = self.getDate(date)
 
 				dataLabels = self.createLabels(environment, index)
 				marker = self.createMarker(pt)
-
+				
+				utcDate = self.getDate(date)
 				if pt.accepted
-					barData.push({name: environment, data: [index]})
+					barData.push({name: environment, data: [utcDate]})
 
 				lineData.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels})
 			)
 			chartData.push({name: environment, legendIndex: index, data: lineData})
 			index++;
 		)
+
+
 
 		$("#chart-bar").highcharts
 			chart:
@@ -84,13 +96,11 @@ class App.Chart
 			xAxis:
 				categories: ['US39']
 
-			yAxis: 
-				stackLabels: 
-					enabled: true
+			yAxis:
+				min:  minDate
+				type: 'datetime'
 
-			plotOptions:
-				series:
-					stacking: 'normal'
+
 
 			series: barData
 
