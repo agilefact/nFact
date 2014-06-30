@@ -8,55 +8,85 @@ namespace nFact.controllers
 {
     public class ChartController : IndexDtoController
     {
-        public StoryCycleTime GetStoryCycleTime(string spec, string id)
+        public StoryCycleTime GetStoryCycleTime(string spec)
         {
-            var results = GetResultsByStory(spec, id);
+            var results = GetResultsByStory(spec);
+            return StoryCycleTime(results);
+        }
+
+        public StoryCycleTime GetStoryCycleTime(string spec, string storyId)
+        {
+            var results = GetResultsByStory(spec, storyId);
+            return StoryCycleTime(results);
+        }
+
+        private static StoryCycleTime StoryCycleTime(Project results)
+        {
             var storyIds = new List<string>();
-            var cycles = new List<CycleTime>();
+            var cycles = new Dictionary<string, EnvironmentCycleProxy>();
 
             var storyName = string.Empty;
+
+            var environments = results.Stories.SelectMany(s => s.Environments).Select(e => e.Name).Distinct();
+            foreach (var environment in environments)
+            {
+                var cycle = new EnvironmentCycleProxy {name = environment};
+                cycles.Add(environment, cycle);
+            }
+
             foreach (var story in results.Stories)
             {
                 storyName = story.Description;
                 storyIds.Add(story.Id);
 
                 var testRuns = from e in story.Environments
-                               let acceptedDate = e.Results.Where(r=> r.Accepted).Max(r => r.TestTime)
+                               let acceptedDate = e.Results.Where(r => r.Accepted).Max(r => r.TestTime)
                                from r in e.Results
                                where r.Accepted && r.TestTime == acceptedDate
                                orderby r.TestRun
                                select new {Environment = e.Name, r};
 
                 var firstRunNum = story.Environments.SelectMany(r => r.Results).Min(r => r.TestRun);
-                var firstRun = story.Environments.SelectMany(r => r.Results).Single(r => r.TestRun == firstRunNum); 
+                var firstRun = story.Environments.SelectMany(r => r.Results).Single(r => r.TestRun == firstRunNum);
 
                 var startDate = firstRun.TestTime;
                 var prevDate = startDate;
                 foreach (var testRun in testRuns)
                 {
-
                     var environment = testRun.Environment;
+                    var envCycle = cycles[environment];
+                    var cycleTimes = envCycle.cycleTimes;
+
                     var testResult = testRun.r;
 
                     var endDate = testResult.TestTime;
                     var diff = endDate.Subtract(prevDate);
 
-                    var cycle = new CycleTime {name = environment};
+                    var cycle = new CycleTime();
                     cycle.start = prevDate;
                     cycle.end = endDate;
                     cycle.days = diff.Days;
-                    cycles.Add(cycle);
+
+                    cycleTimes.Add(cycle);
 
                     prevDate = endDate;
                 }
-
             }
+
+            var environmentCycleTimes = new List<EnvironmentCycle>();
+            foreach (var proxy in cycles)
+            {
+                var cycleTime = new EnvironmentCycle {name = proxy.Key};
+                cycleTime.cycleTimes = proxy.Value.cycleTimes.ToArray();
+                environmentCycleTimes.Add(cycleTime);
+            }
+
 
             return new StoryCycleTime
                        {
                            storyName = storyName,
                            stories = storyIds.ToArray(),
-                           environmentCycleTime = cycles.ToArray()
+                           environmentCycle = environmentCycleTimes.ToArray()
                        };
         }
 
@@ -162,12 +192,23 @@ namespace nFact.controllers
     {
         public string storyName;
         public string[] stories;
-        public CycleTime[] environmentCycleTime;
+        public EnvironmentCycle[] environmentCycle;
+    }
+
+    public class EnvironmentCycle
+    {
+        public string name;
+        public CycleTime[] cycleTimes;
+    }
+
+    public class EnvironmentCycleProxy
+    {
+        public string name;
+        public List<CycleTime> cycleTimes = new List<CycleTime>();
     }
 
     public class CycleTime
     {
-        public string name;
         public int days;
         public DateTime start;
         public DateTime end;

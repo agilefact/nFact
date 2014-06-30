@@ -59,7 +59,7 @@ namespace nFact.Engine
             if (storyResult == null)
                 throw new ApplicationException(string.Format("Unable to find story Id: {0}", storyId));
 
-            var xAttributes = storyResult.Attributes("accpeted");
+            var xAttributes = storyResult.Attributes("accepted");
             if (xAttributes.Any())
                 return;
 
@@ -84,7 +84,13 @@ namespace nFact.Engine
             resultsXml.Save(file);
         }
 
-        private static XElement FindFixture(XElement results, string storyId)
+        internal static XElement FindFixture(XElement results, string storyId)
+        {
+            XElement storyElement;
+            return FindFixture(results, storyId, out storyElement);
+        }
+
+        internal static XElement FindFixture(XElement results, string storyId, out XElement storyElement)
         {
             var fixtures = from f in results.XPathSelectElements("//test-suite[@type = 'TestFixture']")
                            select f;
@@ -99,10 +105,14 @@ namespace nFact.Engine
                     CommandParser.GetContents(category.Attribute("name").Value, '{', '}', out id);
 
                     if (id.Equals(storyId, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        storyElement = category;
                         return fixture;
+                    }
                 }
             }
 
+            storyElement = null;
             return null;
         }
 

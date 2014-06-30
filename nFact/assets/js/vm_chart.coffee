@@ -53,9 +53,14 @@ class App.Chart
 		self = scope
 		barData = []
 		maxDays = 0
-		$.each( jsonData.environmentCycleTime, ( index, cycle ) ->	
-			barData.push({name: cycle.name, data: [cycle.days]})
-			maxDays += cycle.days
+		$.each( jsonData.environmentCycle, ( index, environment ) ->	
+			days = []
+			$.each( environment.cycleTimes, ( index, cycleTime ) ->	
+				days.push(cycleTime.days)
+			)
+
+			barData.push({name: environment.name, data: days})
+			maxDays += days[0]
 		)
 			
 		$.each( barData, ( i, data ) ->	

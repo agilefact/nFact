@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using nFact.Engine;
 
 namespace nFact.TestData
@@ -51,9 +52,11 @@ namespace nFact.TestData
         private string _successDir;
         private int _failureAfterSuccess;
 
-        private List<EnvironmentSimulation> _environments = new List<EnvironmentSimulation>();
+        private EnvironmentSimulation[] _environments;
+        private string[] _storyIds;
         private string _testArtifacts;
         private EnvironmentSimulation _currentEnvironment;
+        private string _currentStoryId;
 
         public string Generate()
         {
@@ -73,19 +76,32 @@ namespace nFact.TestData
             _testArtifacts = Path.Combine(artifactsDir, packageName);
             CreateDirectory(_testArtifacts);
 
-            var local = SetupSimulation(packageName);
 
-            while (!AllEnvironmentsAccepted())
+            _storyIds = new[] { "US39", "US40" };
+
+            foreach (var storyId in _storyIds)
             {
-                RunTestSimulation(local);
+                _currentStoryId = storyId;
+                SimulateStory(packageName);
+                Console.WriteLine("Failures after Success Count: " + _failureAfterSuccess);
+                _failureAfterSuccess = 0;   
             }
 
 
-            Console.WriteLine("Failures after Success Count: " + _failureAfterSuccess);
 
             var projectsFile = Path.Combine(dataDir, "projects.xml");
             SpecStore.SaveArtifacts(_manager.Model, projectsFile);
             return dataDir;
+        }
+
+        private void SimulateStory(string packageName)
+        {
+            var setup = SetupSimulation(packageName);
+
+            while (!AllEnvironmentsAccepted())
+            {
+                RunTestSimulation(setup);
+            }
         }
 
         private void RunTestSimulation(EnvironmentSimulation environment)
@@ -138,7 +154,11 @@ namespace nFact.TestData
                 }
             }
 
-            TestResultsManager.AcceptStoryResult("US39", testResult);
+            if (testResult == null)
+                return;
+
+            TestResultsManager.AcceptStoryResult(_currentStoryId, testResult);
+
 
             Console.WriteLine("{0} Accepted", environment.Name);
             environment.Accepted = true;
@@ -200,8 +220,7 @@ namespace nFact.TestData
             t2.NextEnvironment = stage;
             stage.PrevEnvironment = t2;
 
-            _environments.Add(local);
-            _environments.Add(badev);
+            _environments = new[] {local, badev, t1, t2, stage};
 
             return local;
         }
@@ -239,12 +258,27 @@ namespace nFact.TestData
 
             env.LastResult = result;
 
-            Console.WriteLine("{0}: {1} {2}", script.Environment, date.Day, result);
+            Console.WriteLine("{0}: {1} {2} - {3}", script.Environment, date.Day, _currentStoryId, result);
 
             DirectoryCopy(sourcePath, testRunDir, false);
 
             var testResult = Path.Combine(testRunDir, "TestResult.xml");
+
+            UpdateStoryId(testResult, _currentStoryId);
             return testResult;
+        }
+
+        private static void UpdateStoryId(string testResult, string storyId)
+        {
+            var xml = XElement.Load(testResult);
+            XElement storyElement;
+            TestResultsManager.FindFixture(xml, "US39", out storyElement);
+
+            var tag = "rally{@storyId}";
+            tag = tag.Replace("@storyId", storyId);
+            storyElement.Attribute("name").Value = tag;
+
+            xml.Save(testResult);
         }
 
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
