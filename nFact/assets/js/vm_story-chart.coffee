@@ -7,7 +7,7 @@ class App.Chart
 		json = $('#dataModel').html()
 		dataModel = jQuery.parseJSON(json)
 		spec = dataModel.spec
-		storyId = "US39"
+		storyId = dataModel.storyId
 		urlChart = "/" + spec + "/story/" + storyId + "/chart?format=json"
 		urlBar = "/" + spec + "/story/" + storyId + "/cycle?format=json"
 		this.getData(urlChart, this.render, this)
@@ -88,7 +88,7 @@ class App.Chart
 				opposite: true
 
 			xAxis:
-				categories: ['US39']
+				categories: jsonData.stories
 			
 			plotOptions:
 				bar:

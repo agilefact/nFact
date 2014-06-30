@@ -17,6 +17,7 @@ namespace nFact.viewModels
     public class ChartDataModel 
     {
         public string spec { get; set; }
+        public string storyId { get; set; }
 
         public string ToJSON()
         {

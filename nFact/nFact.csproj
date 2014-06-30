@@ -137,7 +137,7 @@
     <None Include="assets\fonts\glyphicons-halflings-regular.woff">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="assets\js\vm_chart.coffee">
+    <None Include="assets\js\vm_story-chart.coffee">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="assets\js\singleton.coffee">
