@@ -1,15 +1,23 @@
 ﻿$ -> 
-	vm = new App.Chart()
+	json = $('#dataModel').html()
+	dataModel = jQuery.parseJSON(json)
+	
+	vm = new App.Chart(dataModel)
+	ko.applyBindings(vm)
+
 	vm.create()
 			
 class App.Chart
+	constructor: (model) ->
+		@spec = model.spec
+		@storyId = model.storyId
+		@back = ->
+			url = "/" + @spec + "/chart"
+			window.location.replace(url)
+			
 	create: ->
-		json = $('#dataModel').html()
-		dataModel = jQuery.parseJSON(json)
-		spec = dataModel.spec
-		storyId = dataModel.storyId
-		urlChart = "/" + spec + "/story/" + storyId + "/chart?format=json"
-		urlBar = "/" + spec + "/story/" + storyId + "/cycle?format=json"
+		urlChart = "/" + @spec + "/story/" + @storyId + "/chart?format=json"
+		urlBar = "/" + @spec + "/story/" + @storyId + "/cycle?format=json"
 		this.getData(urlChart, this.render, this)
 		this.getData(urlBar, this.renderBar, this)
 	
@@ -129,11 +137,11 @@ class App.Chart
 				
 				utcDate = self.getDate(date)
 				if pt.accepted
-					barData.push({name: environment, data: [utcDate]})
+					barData.push({name: environment, data: [utcDate, 99]})
 
-				lineData.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels})
+				lineData.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels, id: pt.testRun})
 			)
-			chartData.push({name: environment, legendIndex: index, data: lineData})
+			chartData.push({name: environment, legendIndex: index, data: lineData, dataGrouping: {enabled: false}})
 			index++;
 		)
 		
@@ -168,6 +176,15 @@ class App.Chart
 				line:
 					marker:
 						symbol: 'circle'
+				series:
+					cursor: 'pointer'
+					point:
+						events:
+							click: (event) -> 
+								testRun = this.id
+								spec = self.spec
+								url = "/" + spec + "/" + testRun
+								window.location.href = url
 					
 					
 			series: chartData

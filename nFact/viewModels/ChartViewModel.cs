@@ -18,6 +18,7 @@ namespace nFact.viewModels
     {
         public string spec { get; set; }
         public string storyId { get; set; }
+        public string BackUrl { get { return string.Format("/{0}/chart", spec); } }
 
         public string ToJSON()
         {

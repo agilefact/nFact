@@ -45,7 +45,7 @@ namespace nFact.TestData
     }
     public class TestData
     {
-        DateTime _date = new DateTime(2014, 06, 1);
+        DateTime _date = new DateTime(2014, 03, 1);
         private SpecManager _manager = new SpecManager();
         private string _pendingDir;
         private string _failureDir;
@@ -77,7 +77,7 @@ namespace nFact.TestData
             CreateDirectory(_testArtifacts);
 
 
-            _storyIds = new[] { "US39", "US40" };
+            _storyIds = new[] { "US39", "US40", "US41", "US42", "US43" };
 
             foreach (var storyId in _storyIds)
             {

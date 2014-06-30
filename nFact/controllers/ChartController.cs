@@ -135,6 +135,8 @@ namespace nFact.controllers
                     }
 
                     pt = new Point(result.TestTime, value);
+                    pt.testRun = result.TestRun;
+
                     if (result.Accepted)
                         pt.accepted = result.Accepted;
 
@@ -243,5 +245,6 @@ namespace nFact.controllers
         public int y;
         public bool enabled = true;
         public bool accepted;
+        public int testRun;
     }
 }

@@ -11,9 +11,21 @@ namespace nFact.modules
 
         public ChartModule()
         {
-            //Get["/{spec}/chart"] = p => View["charts/story", BuildViewModel(p.spec, null)];
+            Get["/{spec}/chart"] = p => BuildProjectChart(p.spec);
             Get["/{spec}/story/{id}/chart"] = p => BuildStoryChart(p.spec, p.id);
             Get["/{spec}/story/{id}/cycle"] = p => GetStoryCycleData(p.spec, p.id);
+        }
+
+        private dynamic BuildProjectChart(string spec)
+        {
+            string format = Request.Query.format;
+            if (format == null)
+            {
+                var vm = BuildViewModel(spec, null);
+                return View["charts/project", vm];
+            }
+
+            return GetProjectData(spec);
         }
 
         private dynamic BuildStoryChart(string spec, string storyId)
@@ -37,6 +49,14 @@ namespace nFact.modules
                                 };
 
             return new ChartViewModel(data);
+        }
+
+        private dynamic GetProjectData(string spec)
+        {
+            string format = Request.Query.format;
+            var result = _controller.GetStoryCycleTime(spec);
+
+            return ResultResponse(format, result);
         }
 
         private dynamic GetStoryData(string spec, string id)
