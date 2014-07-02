@@ -8,19 +8,25 @@ namespace nFact.controllers
 {
     public class ChartController : IndexDtoController
     {
-        public StoryCycleTime GetStoryCycleTime(string spec)
+        public StoryCycleDuration GetStoryCycleTime(string spec)
         {
             var results = GetResultsByStory(spec);
             return StoryCycleTime(results);
         }
 
-        public StoryCycleTime GetStoryCycleTime(string spec, string storyId)
+        public StoryCycleDuration GetDeploymentCycleTime(string spec)
+        {
+            var results = GetResultsByStory(spec);
+            return StoryCycleTime(results);
+        }
+
+        public StoryCycleDuration GetDeploymentCycleTime(string spec, string storyId)
         {
             var results = GetResultsByStory(spec, storyId);
             return StoryCycleTime(results);
         }
 
-        private static StoryCycleTime StoryCycleTime(Project results)
+        private static StoryCycleDuration StoryCycleTime(Project results)
         {
             var storyIds = new List<string>();
             var cycles = new Dictionary<string, EnvironmentCycleProxy>();
@@ -62,7 +68,7 @@ namespace nFact.controllers
                     var endDate = testResult.TestTime;
                     var diff = endDate.Subtract(prevDate);
 
-                    var cycle = new CycleTime();
+                    var cycle = new CycleDuration();
                     cycle.start = prevDate;
                     cycle.end = endDate;
                     cycle.days = diff.Days;
@@ -77,12 +83,12 @@ namespace nFact.controllers
             foreach (var proxy in cycles)
             {
                 var cycleTime = new EnvironmentCycle {name = proxy.Key};
-                cycleTime.cycleTimes = proxy.Value.cycleTimes.ToArray();
+                cycleTime.CycleDurations = proxy.Value.cycleTimes.ToArray();
                 environmentCycleTimes.Add(cycleTime);
             }
 
 
-            return new StoryCycleTime
+            return new StoryCycleDuration
                        {
                            storyName = storyName,
                            stories = storyIds.ToArray(),
@@ -191,7 +197,7 @@ namespace nFact.controllers
         }
     }
 
-    public class StoryCycleTime
+    public class StoryCycleDuration
     {
         public string storyName;
         public string[] stories;
@@ -201,16 +207,16 @@ namespace nFact.controllers
     public class EnvironmentCycle
     {
         public string name;
-        public CycleTime[] cycleTimes;
+        public CycleDuration[] CycleDurations;
     }
 
     public class EnvironmentCycleProxy
     {
         public string name;
-        public List<CycleTime> cycleTimes = new List<CycleTime>();
+        public List<CycleDuration> cycleTimes = new List<CycleDuration>();
     }
 
-    public class CycleTime
+    public class CycleDuration
     {
         public int days;
         public DateTime start;

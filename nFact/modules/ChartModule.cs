@@ -12,8 +12,14 @@ namespace nFact.modules
         public ChartModule()
         {
             Get["/{spec}/chart"] = p => BuildProjectChart(p.spec);
+            Get["/{spec}/cycle-chart"] = p => BuildProjectCycleChart(p.spec);
             Get["/{spec}/story/{id}/chart"] = p => BuildStoryChart(p.spec, p.id);
             Get["/{spec}/story/{id}/cycle"] = p => GetStoryCycleData(p.spec, p.id);
+        }
+
+        private dynamic BuildProjectCycleChart(string spec)
+        {
+            throw new NotImplementedException();
         }
 
         private dynamic BuildProjectChart(string spec)
@@ -54,7 +60,7 @@ namespace nFact.modules
         private dynamic GetProjectData(string spec)
         {
             string format = Request.Query.format;
-            var result = _controller.GetStoryCycleTime(spec);
+            var result = _controller.GetDeploymentCycleTime(spec);
 
             return ResultResponse(format, result);
         }
@@ -70,7 +76,7 @@ namespace nFact.modules
         private dynamic GetStoryCycleData(string spec, string id)
         {
             string format = Request.Query.format;
-            var result = _controller.GetStoryCycleTime(spec, id);
+            var result = _controller.GetDeploymentCycleTime(spec, id);
 
             return ResultResponse(format, result);
         }
