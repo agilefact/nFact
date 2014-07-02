@@ -1,4 +1,5 @@
 using System.Configuration;
+using nFact.viewModels.Controls;
 
 namespace nFact.viewModels
 {
@@ -15,7 +16,7 @@ namespace nFact.viewModels
             DataModel = dataModel;
         }
 
-        protected void SetTestRunPagenation(int current, int max)
+        protected void SetTestRunPagination(int current, int max)
         {
             var artifactsLimit = 0;
             int.TryParse(ConfigurationManager.AppSettings["MaxArtifacts"], out artifactsLimit);
@@ -27,7 +28,7 @@ namespace nFact.viewModels
             if (min < 1)
                 min = 1;
 
-            Controls.SetTestRunPagenation(min, current, max);
+            Controls.SetPagination(min, current, max);
         }
     }
 }

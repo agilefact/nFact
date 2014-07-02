@@ -60,32 +60,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <ul class="pagination" style="margin: 0px;">
-                        @if (Model.PrevVisible)
-                        {
-                            var href = string.Format("/{0}/{1}", Model.Spec, Model.PageMin - 1);
-                            <li><a href="@href" style="padding-top: 2; padding-bottom: 2">&laquo;</a></li>
-                        }
-                       
-                        @for (int test = Model.PageMin; test <= Model.PageMax; test++)
-                        {
-                            var href = string.Format("/{0}/{1}", Model.Spec, test);
-                            if (test == Model.PageCurrent)
-                            {
-                                <li class="active"><a href="@href" style="padding-top: 2; padding-bottom: 2">@test</a></li>
-                            }
-                            else
-                            {
-                                <li><a href="@href" style="padding-top: 2; padding-bottom: 2">@test</a></li>
-                            }
-                        }
-
-                        @if (Model.NextVisible)
-                        {
-                            var href = string.Format("/{0}/{1}", Model.Spec, Model.PageMax + 1);
-                            <li><a href="@href" style="padding-top: 2; padding-bottom: 2">&raquo;</a></li>
-                        }
-                    </ul>
+                    @Html.Partial("partials/Pagination", Model.Pages)
                 </div>
                 <div class="col-md-2" style="top: 10">
                         <p class="navbar-right" ><a href="#" data-bind="click: hide" class="navbar-link">Hide</a></p>

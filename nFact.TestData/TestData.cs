@@ -57,6 +57,7 @@ namespace nFact.TestData
         private string _testArtifacts;
         private EnvironmentSimulation _currentEnvironment;
         private string _currentStoryId;
+        private int _testRuns;
 
         public string Generate()
         {
@@ -87,6 +88,7 @@ namespace nFact.TestData
                 _failureAfterSuccess = 0;   
             }
 
+            Console.WriteLine("Total Test Runs: " + _testRuns);
 
 
             var projectsFile = Path.Combine(dataDir, "projects.xml");
@@ -237,6 +239,7 @@ namespace nFact.TestData
             var artifacts = _manager.CreateArtifacts(script);
             artifacts.Date = date;
             artifacts.RecordTestComplete();
+            _testRuns = artifacts.TestRun;
 
             var testRunDir = Path.Combine(_testArtifacts, artifacts.ArtifactsVersion);
             CreateDirectory(testRunDir);
@@ -258,7 +261,7 @@ namespace nFact.TestData
 
             env.LastResult = result;
 
-            Console.WriteLine("{0}: {1} {2} - {3}", script.Environment, date.Day, _currentStoryId, result);
+            Console.WriteLine("Test Run {0}, Env {1}: {2} {3} - {4}", _testRuns, script.Environment, date.Day, _currentStoryId, result);
 
             DirectoryCopy(sourcePath, testRunDir, false);
 

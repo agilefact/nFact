@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace nFact.viewModels
+namespace nFact.viewModels.Controls
 {
     public class ControlsViewModel
     {
@@ -25,15 +25,8 @@ namespace nFact.viewModels
 
         public bool HideControlsVisible { get; set; }
         public bool ControlsVisible { get; set; }
-        public int Max { get; set; }
-        public int Min { get; set; }
-        public int PageMin { get; set; }
-        public int PageMax { get; set; }
-        public int PageCurrent { get; set; }
-        public int NumOfPages { get; set; }
-        public bool NextVisible { get; set; }
-        public bool PrevVisible { get; set; }
         public string Spec { get { return _dataModel.selectedSpec; } }
+        public PaginationViewModel Pages { get; set; }
 
         public ControlsViewModel(PageDataModel dataModel)
         {
@@ -45,46 +38,19 @@ namespace nFact.viewModels
             {
                 int.TryParse(page, out numOfPages);
             }
-            NumOfPages = numOfPages;
-        }
 
-        public void SetTestRunPagenation(int min, int current, int max)
-        {
-            Max = max;
-            Min = min;
-
-            if (current - NumOfPages < min)
-            {
-                PageMin = min;
-                PageMax = min + NumOfPages - 1;
-            }
-
-            if ((current + NumOfPages) > max)
-            {
-                PageMin = max - NumOfPages + 1;
-                PageMax = max;
-            }
-
-            if (min < PageMin)
-                PrevVisible = true;
-
-            if (max > PageMax)
-                NextVisible = true;
-
-
-            if (PageMax > max)
-                PageMax = max;
-
-            if (PageMin < min)
-                PageMin = min;
-
-            PageCurrent = current;
+            Pages = new PaginationViewModel(dataModel.selectedSpec, numOfPages);
         }
 
         public void HideControls()
         {
             ControlsVisible = false;
             HideControlsVisible = true;
+        }
+
+        public void SetPagination(int min, int current, int max)
+        {
+            Pages.Set(min, current, max);
         }
     }
 }
