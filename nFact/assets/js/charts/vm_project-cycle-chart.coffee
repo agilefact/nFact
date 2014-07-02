@@ -7,7 +7,7 @@ class App.ProjectChart
 		json = $('#dataModel').html()
 		dataModel = jQuery.parseJSON(json)
 		@spec = dataModel.spec
-		urlData = "/" + @spec + "/deployment?format=json"
+		urlData = "/" + @spec + "/cycle?format=json"
 		this.getData(urlData, this.render, this)
 	
 	
@@ -50,7 +50,7 @@ class App.ProjectChart
 
 		spec = scope.spec
 		title = "CommBiz Asset Finance"
-		subtitle = "Deployment Cycle Time"
+		subtitle = "Story Cycle Time"
 		storyList = jsonData.stories
 		
 		chart = new App.CycleChart()

@@ -12,7 +12,7 @@ namespace nFact.modules
         public ChartModule()
         {
             Get["/{spec}/deployment"] = p => BuildProjectDeploymentChart(p.spec);
-            Get["/{spec}/story-cycle-time"] = p => BuildProjectCycleChart(p.spec);
+            Get["/{spec}/cycle"] = p => BuildProjectCycleChart(p.spec);
             Get["/{spec}/story/{id}/chart"] = p => BuildStoryChart(p.spec, p.id);
             Get["/{spec}/story/{id}/cycle"] = p => GetStoryCycleData(p.spec, p.id);
         }
@@ -23,7 +23,7 @@ namespace nFact.modules
             if (format == null)
             {
                 var vm = BuildViewModel(spec, null);
-                return View["charts/storyCycle", vm];
+                return View["charts/projectCycle", vm];
             }
 
             return GetProjectData(spec);
