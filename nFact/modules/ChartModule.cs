@@ -11,24 +11,31 @@ namespace nFact.modules
 
         public ChartModule()
         {
-            Get["/{spec}/chart"] = p => BuildProjectChart(p.spec);
-            Get["/{spec}/cycle-chart"] = p => BuildProjectCycleChart(p.spec);
+            Get["/{spec}/deployment"] = p => BuildProjectDeploymentChart(p.spec);
+            Get["/{spec}/story-cycle-time"] = p => BuildProjectCycleChart(p.spec);
             Get["/{spec}/story/{id}/chart"] = p => BuildStoryChart(p.spec, p.id);
             Get["/{spec}/story/{id}/cycle"] = p => GetStoryCycleData(p.spec, p.id);
         }
 
         private dynamic BuildProjectCycleChart(string spec)
         {
-            throw new NotImplementedException();
+            string format = Request.Query.format;
+            if (format == null)
+            {
+                var vm = BuildViewModel(spec, null);
+                return View["charts/storyCycle", vm];
+            }
+
+            return GetProjectData(spec);
         }
 
-        private dynamic BuildProjectChart(string spec)
+        private dynamic BuildProjectDeploymentChart(string spec)
         {
             string format = Request.Query.format;
             if (format == null)
             {
                 var vm = BuildViewModel(spec, null);
-                return View["charts/project", vm];
+                return View["charts/projectDeployment", vm];
             }
 
             return GetProjectData(spec);

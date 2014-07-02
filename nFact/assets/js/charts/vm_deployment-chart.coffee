@@ -7,7 +7,7 @@ class App.ProjectChart
 		json = $('#dataModel').html()
 		dataModel = jQuery.parseJSON(json)
 		@spec = dataModel.spec
-		urlData = "/" + @spec + "/chart?format=json"
+		urlData = "/" + @spec + "/deployment?format=json"
 		this.getData(urlData, this.render, this)
 	
 	
@@ -36,8 +36,8 @@ class App.ProjectChart
 		$.each( jsonData.environmentCycle, ( index, environment ) ->	
 			days = []
 			color = scope.pickColor(index)
-			$.each( environment.cycleTimes, ( index, cycleTime ) ->	
-				days.push({y: cycleTime.days, color: color})
+			$.each( environment.CycleDurations, ( index, duration ) ->	
+				days.push({y: duration.days, color: color})
 			)
 
 			barData.push({name: environment.name, data: days, color: color})
