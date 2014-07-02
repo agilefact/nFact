@@ -58,17 +58,17 @@ class App.Chart
 		Date.UTC(year, month, day)
 
 	renderBar: (jsonData, scope) ->
-		self = scope
 		barData = []
 		maxDays = 0
 		$.each( jsonData.environmentCycle, ( index, environment ) ->	
 			days = []
+			color = scope.pickColor(index)
 			$.each( environment.cycleTimes, ( index, cycleTime ) ->	
-				days.push(cycleTime.days)
+				days.push({y: cycleTime.days, color: color})
 			)
 
-			barData.push({name: environment.name, data: days})
-			maxDays += days[0]
+			barData.push({name: environment.name, data: days, color: color})
+			maxDays += days[0].y
 		)
 			
 		$.each( barData, ( i, data ) ->	
@@ -76,45 +76,34 @@ class App.Chart
 			data.legendIndex = i
 		)		
 
-		$("#chart-bar").highcharts
-			chart:
-				type: 'bar'
+		chart = new App.CycleChart()
 
-			title:
-				text: "Story Test Automation"
-				x: -20 #center
+		spec = scope.spec
+		title = "CommBiz - Asset Finance Automation"
+		subTitle = jsonData.storyName
+		storyList = jsonData.stories
 
-			subtitle:
-				text: jsonData.storyName
-				x: -20
+		chart.render(spec, title, subTitle, storyList, barData, maxDays)
 
-			yAxis:
-				title: 
-					text: 'Days'
-				max: maxDays
-				endOnTick: false
-				opposite: true
-
-			xAxis:
-				categories: jsonData.stories
-			
-			plotOptions:
-				bar:
-					stacking: 'normal'
-					pointWidth: 20				
-
-			series: barData
-
-			legend:
-				layout: "vertical"
-				align: "right"
-				verticalAlign: "middle"
-				borderWidth: 0
-			
-
-		
+	getTestRun: (environment, testRun, scope) ->
+		result = {}
+		$.each( scope.storyData, ( index, series ) ->
+			environment = series.environment
+			$.each( series.points, ( index, pt ) ->
+				if pt.testRun == testRun && environment == environment
+					result = pt
+			)
+		)
+		return result
+	
+	pickColor: (i) ->
+		colors = colors = ['#D1590F', '#0E7EC4', '#4FE86E', '#21B53E', '#036617']
+		colors[i]
+				
 	render: (jsonData, scope) ->
 		self = scope
+
+		scope.storyData = jsonData.seriesArray
 		chartData = []
 		
 		index = 0	
@@ -127,6 +116,8 @@ class App.Chart
 			environment = series.environment
 			barCategories.push(environment)
 
+			color = scope.pickColor(index)
+
 			$.each( series.points, ( index, pt ) ->
 				date = new Date(parseInt(pt.x.substr(6)))
 				if minDate == null
@@ -137,11 +128,11 @@ class App.Chart
 				
 				utcDate = self.getDate(date)
 				if pt.accepted
-					barData.push({name: environment, data: [utcDate, 99]})
+					barData.push({name: environment, data: [utcDate]})
 
-				lineData.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels, id: pt.testRun})
+				lineData.push({x: date, y: pt.y, marker: marker, dataLabels: dataLabels, id: pt.testRun, color: color})
 			)
-			chartData.push({name: environment, legendIndex: index, data: lineData, dataGrouping: {enabled: false}})
+			chartData.push({name: environment, legendIndex: index, data: lineData, dataGrouping: {enabled: false}, color: color})
 			index++;
 		)
 		
@@ -185,7 +176,11 @@ class App.Chart
 								spec = self.spec
 								url = "/" + spec + "/" + testRun
 								window.location.href = url
-					
+			tooltip:
+				formatter: -> 
+					data = scope.getTestRun(this.series.name, this.point.id, scope)
+					if data != null
+						data.result
 					
 			series: chartData
 

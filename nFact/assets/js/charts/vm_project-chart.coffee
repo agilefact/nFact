@@ -10,6 +10,11 @@ class App.ProjectChart
 		urlData = "/" + @spec + "/chart?format=json"
 		this.getData(urlData, this.render, this)
 	
+	
+	pickColor: (i) ->
+		colors = ['#D1590F', '#0E7EC4', '#4FE86E', '#21B53E', '#036617']
+		colors[i]
+
 	getData: (url, callback, scope) ->
 		$.ajax
 			type: "GET",
@@ -30,11 +35,12 @@ class App.ProjectChart
 		maxDays = 0
 		$.each( jsonData.environmentCycle, ( index, environment ) ->	
 			days = []
+			color = scope.pickColor(index)
 			$.each( environment.cycleTimes, ( index, cycleTime ) ->	
-				days.push(cycleTime.days)
+				days.push({y: cycleTime.days, color: color})
 			)
 
-			barData.push({name: environment.name, data: days})
+			barData.push({name: environment.name, data: days, color: color})
 		)
 			
 		$.each( barData, ( i, data ) ->	

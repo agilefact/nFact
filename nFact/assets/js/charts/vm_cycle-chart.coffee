@@ -1,5 +1,5 @@
 ﻿class App.CycleChart
-	render: (spec, title, subTitle, stories, data) ->
+	render: (spec, title, subTitle, stories, data, maxDays) ->
 		console.log(spec)
 		$("#chart-bar").highcharts
 			chart:
@@ -14,6 +14,7 @@
 				x: -20
 
 			yAxis:
+				max: maxDays
 				title: 
 					text: 'Days'
 				endOnTick: false
@@ -34,7 +35,9 @@
 								storyId = this.category
 								url = "/" + spec + "/story/" + storyId + "/chart"
 								window.location.replace(url)
-								
+			tooltip:
+				valueSuffix: ' days'
+													
 
 			series: data
 
