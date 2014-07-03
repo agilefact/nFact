@@ -349,7 +349,12 @@ namespace nFact.TestData
             if (nextDay)
                 days = 1;
 
-            _date = _date.AddDays(days);
+            var hours = GetRandom(4, 12);
+            if (nextDay)
+                hours = 4;
+
+            //_date = _date.AddDays(days);
+            _date = _date.AddHours(hours);
             int hour = GetRandom(9, 18);
             _date.AddHours(hour);
         }
