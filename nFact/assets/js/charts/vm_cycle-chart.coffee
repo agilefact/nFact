@@ -1,7 +1,9 @@
 ﻿class App.CycleChart
-	render: (spec, title, subTitle, stories, data, maxDays) ->
+	render: (spec, title, subTitle, stories, data, annotations) ->
 		console.log(spec)
-		$("#chart-bar").highcharts
+		$("#container").highcharts
+			annotationsOptions:
+				enabledButtons: false
 			chart:
 				type: 'columnrange',
 				inverted: true
@@ -23,7 +25,11 @@
 				categories: stories
 
 			tooltip:
-				valueSuffix: ' days'
+				formatter: -> 
+					'<b>' + this.key + 
+						': </b>' + 
+						Highcharts.dateFormat('%d %b', this.point.low) + ' - ' +
+						Highcharts.dateFormat('%d %b', this.point.high) 
 													
 
 			series: data
@@ -33,6 +39,7 @@
 				align: "right"
 				verticalAlign: "middle"
 				borderWidth: 0
+			annotations: annotations
 			
 
 		

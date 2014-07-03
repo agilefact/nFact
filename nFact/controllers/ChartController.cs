@@ -24,7 +24,7 @@ namespace nFact.controllers
 
             var storyIds = new List<string>();
 
-            var deploymentCycle = new EnvironmentCycle() {name = "deployment"};
+            var deploymentCycle = new EnvironmentCycle() {name = "Deployment Overhead"};
             var storyDurations = new List<CycleDuration>();
             foreach (var story in stories)
             {
@@ -37,14 +37,41 @@ namespace nFact.controllers
                 duration.start = startDate;
                 duration.end = endDate;
                 duration.days = endDate.Subtract(startDate).Days;
+                duration.enableAnnotation = true;
+                duration.annotation =  duration.days + " Pts";
                 storyDurations.Add(duration);
             }
+
+
             deploymentCycle.CycleDurations = storyDurations.ToArray();
 
+            var developmentCycle = GetDevCycleTime(storyDurations);
             return new StoryCycleDuration
                        {
                            stories = storyIds.ToArray(),
-                           environmentCycle = new[] {deploymentCycle}
+                           environmentCycle = new[] {developmentCycle, deploymentCycle}
+                       };
+        }
+
+        private EnvironmentCycle GetDevCycleTime(IEnumerable<CycleDuration> deploymentDurations)
+        {
+            var cycles = new List<CycleDuration>();
+            foreach (var deploymentDuration in deploymentDurations)
+            {
+                var rnd = new Random();
+                var days = rnd.Next(5, 15);
+                var cycleDuration = new CycleDuration
+                                        {
+                                            start = deploymentDuration.start.Subtract(TimeSpan.FromDays(days)),
+                                            end = deploymentDuration.start
+                                        };
+                cycles.Add(cycleDuration);
+            }
+            
+            return new EnvironmentCycle
+                       {
+                           name = "Development",
+                           CycleDurations = cycles.ToArray()
                        };
         }
 
@@ -255,6 +282,8 @@ namespace nFact.controllers
         public int days;
         public DateTime start;
         public DateTime end;
+        public bool enableAnnotation;
+        public string annotation;
     }
 
     public class ChartData
