@@ -53,7 +53,7 @@ class App.ProjectChart
 		subtitle = "Deployment Cycle Time"
 		storyList = jsonData.stories
 		
-		chart = new App.CycleChart()
+		chart = new App.CycleDuraton()
 		chart.render(spec, title, subtitle, storyList, barData)
 		
 	

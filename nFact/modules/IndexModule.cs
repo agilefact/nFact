@@ -18,7 +18,7 @@ namespace nFact.modules
         {
             Get["/"] = p => GetResults(null, null);
             Get["/{spec}"] = p => GetResults(p.spec, null);
-            Get["/{spec}/{test}"] = p => GetResults(p.spec, p.test, true);
+            //Get["/{spec}/{test}"] = p => GetResults(p.spec, p.test, true);
             Get["/{spec}/{test}/artifacts/{file}"] = p => GetFile(p.spec, p.test, p.file);
             Get["/{spec}/story/{id}"] = p => GetCurrentResultsByStory(p.spec, p.id);
             Get["/{spec}/story/{id}/history"] = p => GetResultsByStory(p.spec, p.id);

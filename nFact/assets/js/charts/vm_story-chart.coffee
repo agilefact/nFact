@@ -12,7 +12,7 @@ class App.Chart
 		@spec = model.spec
 		@storyId = model.storyId
 		@back = ->
-			url = "/" + @spec + "/chart"
+			url = "/" + @spec + "/deployment"
 			window.location.replace(url)
 			
 	create: ->
@@ -63,8 +63,8 @@ class App.Chart
 		$.each( jsonData.environmentCycle, ( index, environment ) ->	
 			days = []
 			color = scope.pickColor(index)
-			$.each( environment.cycleTimes, ( index, cycleTime ) ->	
-				days.push({y: cycleTime.days, color: color})
+			$.each( environment.CycleDurations, ( index, duration ) ->	
+				days.push({y: duration.days, color: color})
 			)
 
 			barData.push({name: environment.name, data: days, color: color})
@@ -76,7 +76,7 @@ class App.Chart
 			data.legendIndex = i
 		)		
 
-		chart = new App.CycleChart()
+		chart = new App.CycleDuraton()
 
 		spec = scope.spec
 		title = "CommBiz - Asset Finance Automation"
