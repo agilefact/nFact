@@ -18,28 +18,28 @@ namespace nFact.controllers
             return _manager.GetCurrentProjectStoryResults(project, storyId);
         }
 
-        public Project GetResultsByEnvironment(string spec, string storyId)
+        public Project GetResultsByEnvironmentStory(string spec, string storyId)
         {
             var project = GetProject(spec);
-            return _manager.GetResultsByEnvironment(project, storyId);
+            return _manager.GetResultsByEnvironmentStory(project, storyId);
         }
 
-        public Project GetResultsByEnvironment(string spec)
+        public Project GetResultsByEnvironmentStory(string spec)
         {
             var project = GetProject(spec);
-            return _manager.GetResultsByEnvironment(project);
+            return _manager.GetResultsByEnvironmentStory(project);
         }
 
-        public Project GetResultsByStory(string spec)
+        public Project GetResultsByStoryEnvironment(string spec)
         {
             var project = GetProject(spec);
-            return _manager.GetResultsByStory(project);
+            return _manager.GetResultsByStoryEnvironment(project);
         }
 
-        public Project GetResultsByStory(string spec, string storyId)
+        public Project GetResultsByStoryEnvironment(string spec, string storyId)
         {
             var project = GetProject(spec);
-            return _manager.GetResultsByStory(project, storyId);
+            return _manager.GetResultsByStoryEnvironment(project, storyId);
         }
 
         public bool AcceptStory(string spec, string storyId, int testRun)

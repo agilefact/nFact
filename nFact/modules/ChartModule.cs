@@ -26,7 +26,9 @@ namespace nFact.modules
                 return View["charts/projectCycle", vm];
             }
 
-            return GetProjectData(spec);
+            var result = _controller.GetStoryCycleTime(spec);
+
+            return ResultResponse(format, result);
         }
 
         private dynamic BuildProjectDeploymentChart(string spec)

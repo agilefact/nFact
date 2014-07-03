@@ -10,19 +10,53 @@ namespace nFact.controllers
     {
         public StoryCycleDuration GetStoryCycleTime(string spec)
         {
-            var results = GetResultsByStory(spec);
-            return StoryCycleTime(results);
+            var project = GetProject(spec);
+            var manager = new StoryManager();
+            var storyResults = manager.GetStoryResults(project);
+            var stories = from r in storyResults
+                          group r by r.Id
+                              into s
+                              select new
+                              {
+                                  Id = s.Key,
+                                  Results = s.ToArray()
+                              };
+
+            var storyIds = new List<string>();
+
+            var deploymentCycle = new EnvironmentCycle() {name = "deployment"};
+            var storyDurations = new List<CycleDuration>();
+            foreach (var story in stories)
+            {
+                storyIds.Add(story.Id);
+                var fistTestRunNum = story.Results.Min(r => r.TestRun);
+                var lastTestRunNum = story.Results.Max(r => r.TestRun);
+                var startDate = story.Results.First(r => r.TestRun == fistTestRunNum).TestTime;
+                var endDate = story.Results.First(r => r.TestRun == lastTestRunNum).TestTime;
+                var duration = new CycleDuration();
+                duration.start = startDate;
+                duration.end = endDate;
+                duration.days = endDate.Subtract(startDate).Days;
+                storyDurations.Add(duration);
+            }
+            deploymentCycle.CycleDurations = storyDurations.ToArray();
+
+            return new StoryCycleDuration
+                       {
+                           stories = storyIds.ToArray(),
+                           environmentCycle = new[] {deploymentCycle}
+                       };
         }
 
         public StoryCycleDuration GetDeploymentCycleTime(string spec)
         {
-            var results = GetResultsByStory(spec);
+            var results = GetResultsByStoryEnvironment(spec);
             return StoryCycleTime(results);
         }
 
         public StoryCycleDuration GetDeploymentCycleTime(string spec, string storyId)
         {
-            var results = GetResultsByStory(spec, storyId);
+            var results = GetResultsByStoryEnvironment(spec, storyId);
             return StoryCycleTime(results);
         }
 
@@ -98,7 +132,7 @@ namespace nFact.controllers
 
         public ChartData GetStoryChartData(string spec, string id)
         {
-            var results = GetResultsByEnvironment(spec, id);
+            var results = GetResultsByEnvironmentStory(spec, id);
 
             var data = new ChartData();
             data.storyName = GetStoryName(results);

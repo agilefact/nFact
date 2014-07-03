@@ -30,6 +30,13 @@ class App.ProjectChart
 			error: (XMLHttpRequest, textStatus, errorThrown) -> 
 				alert('error occurred')
 
+	getDate: (strDate) ->
+		date = new Date(parseInt(strDate.substr(6)))
+		year = date.getUTCFullYear()
+		month = date.getUTCMonth()
+		day = date.getUTCDate()
+		Date.UTC(year, month, day)
+
 	render: (jsonData, scope) ->
 		barData = []
 		maxDays = 0
@@ -37,16 +44,13 @@ class App.ProjectChart
 			days = []
 			color = scope.pickColor(index)
 			$.each( environment.CycleDurations, ( index, duration ) ->	
-				days.push({y: duration.days, color: color})
+				start = scope.getDate(duration.start)
+				end = scope.getDate(duration.end)
+				days.push({low: start, high: end, color: color})
 			)
 
 			barData.push({name: environment.name, data: days, color: color})
-		)
-			
-		$.each( barData, ( i, data ) ->	
-			data.index = barData.length - 1 - i
-			data.legendIndex = i
-		)		
+		)	
 
 		spec = scope.spec
 		title = "CommBiz Asset Finance"
@@ -54,6 +58,6 @@ class App.ProjectChart
 		storyList = jsonData.stories
 		
 		chart = new App.CycleChart()
-		chart.render(spec, title, subtitle, storyList, barData)
+		chart.render(spec, title, subtitle, ['s1'], barData)
 		
 	

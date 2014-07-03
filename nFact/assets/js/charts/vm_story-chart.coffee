@@ -52,9 +52,9 @@ class App.Chart
 			{enabled: pt.enabled, symbol: 'circle'}
 
 	getDate: (date) ->
-		year = date.getFullYear()
-		month = date.getMonth()
-		day = date.getDate()
+		year = date.getUTCFullYear()
+		month = date.getUTCMonth()
+		day = date.getUTCDate()
 		Date.UTC(year, month, day)
 
 	renderBar: (jsonData, scope) ->

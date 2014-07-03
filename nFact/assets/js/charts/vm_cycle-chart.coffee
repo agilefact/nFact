@@ -3,7 +3,8 @@
 		console.log(spec)
 		$("#chart-bar").highcharts
 			chart:
-				type: 'bar'
+				type: 'columnrange',
+				inverted: true
 
 			title:
 				text: title
@@ -14,27 +15,13 @@
 				x: -20
 
 			yAxis:
-				max: maxDays
+				type: 'datetime'
 				title: 
-					text: 'Days'
-				endOnTick: false
-				opposite: true
+					text: 'Time'
 
 			xAxis:
 				categories: stories
-			
-			plotOptions:
-				bar:
-					stacking: 'normal'
-					pointWidth: 20	
-				series:
-					cursor: 'pointer'
-					point:
-						events:
-							click: (event) -> 
-								storyId = this.category
-								url = "/" + spec + "/story/" + storyId + "/chart"
-								window.location.replace(url)
+
 			tooltip:
 				valueSuffix: ' days'
 													

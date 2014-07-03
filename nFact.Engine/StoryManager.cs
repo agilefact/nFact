@@ -12,7 +12,7 @@ namespace nFact.Engine
     {
         public Project GetCurrentProjectStoryResults(Model.Project project)
         {
-            var projectResults = GetResultsByEnvironment(project);
+            var projectResults = GetResultsByEnvironmentStory(project);
             var environments = from e in projectResults.Environments
                                select new Environment
                                {
@@ -29,7 +29,7 @@ namespace nFact.Engine
 
         public Project GetCurrentProjectStoryResults(Model.Project project, string storyId)
         {
-            var projectResults = GetResultsByEnvironment(project);
+            var projectResults = GetResultsByEnvironmentStory(project);
             var environments = from e in projectResults.Environments
                                select new Environment
                                {
@@ -131,9 +131,9 @@ namespace nFact.Engine
             return story.Accepted;
         }
 
-        public Project GetResultsByStory(Model.Project project, string storyId)
+        public Project GetResultsByStoryEnvironment(Model.Project project, string storyId)
         {
-            var projectResults = GetResultsByStory(project);
+            var projectResults = GetResultsByStoryEnvironment(project);
             var stories = from s in projectResults.Stories
                           where s.Id == storyId
                           select s;
@@ -145,9 +145,9 @@ namespace nFact.Engine
             };
         }
 
-        public Project GetResultsByEnvironment(Model.Project project, string storyId)
+        public Project GetResultsByEnvironmentStory(Model.Project project, string storyId)
         {
-            var projectResults = GetResultsByEnvironment(project);
+            var projectResults = GetResultsByEnvironmentStory(project);
             var environments = from e in projectResults.Environments
                                select new Environment
                                {
@@ -163,7 +163,7 @@ namespace nFact.Engine
             };
         }
 
-        public Project GetResultsByStory(Model.Project project)
+        public Project GetResultsByStoryEnvironment(Model.Project project)
         {
             var storyResults = GetStoryResults(project);
             var stories = from r in storyResults   
@@ -183,7 +183,7 @@ namespace nFact.Engine
             };
         }
 
-        public Project GetResultsByEnvironment(Model.Project project)
+        public Project GetResultsByEnvironmentStory(Model.Project project)
         {
             var storyResults = GetStoryResults(project);
             var environments = from r in storyResults

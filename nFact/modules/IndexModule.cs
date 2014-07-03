@@ -86,7 +86,7 @@ namespace nFact.modules
 
         private dynamic GetResultsByProject(string spec, string format)
         {
-            var result = _dtoController.GetResultsByEnvironment(spec);
+            var result = _dtoController.GetResultsByEnvironmentStory(spec);
 
             return ResultResponse(format, result);
         }
@@ -94,7 +94,7 @@ namespace nFact.modules
         private dynamic GetResultsByStory(string spec, string id)
         {
             string format = Request.Query.format;
-            var result = _dtoController.GetResultsByEnvironment(spec, id);
+            var result = _dtoController.GetResultsByEnvironmentStory(spec, id);
 
             return ResultResponse(format, result);
         }
