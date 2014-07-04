@@ -79,8 +79,8 @@ class App.Chart
 		chart = new App.CycleDuraton()
 
 		spec = scope.spec
-		title = "CommBiz - Asset Finance Automation"
-		subTitle = jsonData.storyName
+		title = "CommBiz - Team Top Gun"
+		subTitle = "Story: " + jsonData.storyName
 		storyList = jsonData.stories
 
 		chart.render(spec, title, subTitle, storyList, barData, maxDays)

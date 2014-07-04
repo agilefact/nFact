@@ -179,7 +179,7 @@ namespace nFact.controllers
                     var cycle = new CycleDuration();
                     cycle.start = prevDate;
                     cycle.end = endDate;
-                    cycle.days = diff.Days;
+                    cycle.days = Math.Round(diff.TotalDays, 1);
 
                     cycleTimes.Add(cycle);
 
@@ -236,7 +236,7 @@ namespace nFact.controllers
                 foreach (var result in story.Results)
                 {
                     var day = result.TestTime.Date;
-                    RemovePreviousDate(day, dataPoints); // Remove any prev points for the same day
+                    //RemovePreviousDate(day, dataPoints); // Remove any prev points for the same day
 
                     var value = successVal - successHeight;
                     if (result.Result == "Success")
@@ -327,12 +327,12 @@ namespace nFact.controllers
 
     public class CycleDuration
     {
-        public int days;
+        public double days;
         public DateTime start;
         public DateTime end;
         public bool enableAnnotation;
         public string annotation;
-        public int cycleTime;
+        public double cycleTime;
     }
 
     public class ChartData

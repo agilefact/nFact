@@ -19,6 +19,7 @@
 					text: 'Days'
 				endOnTick: false
 				opposite: true
+				tickInterval: 1
 
 			xAxis:
 				categories: stories
