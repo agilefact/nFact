@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using nFact.Engine;
 using nFact.Engine.Model.DataTransfer;
 
@@ -24,10 +25,13 @@ namespace nFact.controllers
 
             var storyIds = new List<string>();
 
-            var deploymentCycle = new EnvironmentCycle() {name = "Deployment Overhead"};
+            var deploymentCycle = new EnvironmentCycle() {name = "Automation"};
             var storyDurations = new List<CycleDuration>();
+
+            var i = 0;
             foreach (var story in stories)
             {
+                i++;
                 storyIds.Add(story.Id);
                 var fistTestRunNum = story.Results.Min(r => r.TestRun);
                 var lastTestRunNum = story.Results.Max(r => r.TestRun);
@@ -38,33 +42,76 @@ namespace nFact.controllers
                 duration.end = endDate;
                 duration.days = endDate.Subtract(startDate).Days;
                 duration.enableAnnotation = true;
-                duration.annotation =  duration.days + " Pts";
                 storyDurations.Add(duration);
+
+                if (i == 5)
+                {
+                    duration.end = startDate;
+                    duration.days = 0;
+                    duration.enableAnnotation = false;
+                }
             }
 
 
             deploymentCycle.CycleDurations = storyDurations.ToArray();
 
             var developmentCycle = GetDevCycleTime(storyDurations);
+
+            var totalCycleTime = deploymentCycle.CycleDurations.Sum(c => c.cycleTime);
+            var avgCycle = totalCycleTime/stories.Count();
+
+            var label = new StringBuilder();
+            label.Append(string.Format("<b>Avg. Cycle Time:</b> {0} days", avgCycle));
+            label.Append("<br/>");
+            label.Append("<b>Avg. Story Cost:</b> 20.5K");
+            label.Append("<br/>");
+            label.Append("<b>Throughput:</b> 6 stories");
+            label.Append("<br/>");
+            label.Append("<b>Automation:</b> 83%");
+            label.Append("<br/>");
+            label.Append("<b>Value Add:</b> 70%");
+            label.Append("<br/>");
+            label.Append("<b>Non Value Add:</b> 30%");
+            label.Append("<br/>");
+            label.Append("<b>Weighted Value-Quality:</b> 77%");
             return new StoryCycleDuration
                        {
                            stories = storyIds.ToArray(),
-                           environmentCycle = new[] {developmentCycle, deploymentCycle}
+                           environmentCycle = new[] {developmentCycle, deploymentCycle},
+                           label = label.ToString()
                        };
         }
 
         private EnvironmentCycle GetDevCycleTime(IEnumerable<CycleDuration> deploymentDurations)
         {
             var cycles = new List<CycleDuration>();
+            var bv = 1;
             foreach (var deploymentDuration in deploymentDurations)
             {
                 var rnd = new Random();
-                var days = rnd.Next(5, 15);
+                var days = rnd.Next(10, 20);
+                bv ++;
+                if (bv == 4)
+                    bv = 1;
+
+                var cycleTime = days + deploymentDuration.days;
+                deploymentDuration.cycleTime = cycleTime;
+                deploymentDuration.annotation = "CT: " + cycleTime + " days";
+
                 var cycleDuration = new CycleDuration
                                         {
                                             start = deploymentDuration.start.Subtract(TimeSpan.FromDays(days)),
-                                            end = deploymentDuration.start
+                                            end = deploymentDuration.start,
+                                            days = days
                                         };
+
+                cycleDuration.enableAnnotation = true;
+
+                cycleDuration.annotation = "BV: " + bv;
+                if (deploymentDuration.enableAnnotation == false)
+                    cycleDuration.annotation = string.Format("{0} <br/> {1}", cycleDuration.annotation,
+                                                             deploymentDuration.annotation);
+
                 cycles.Add(cycleDuration);
             }
             
@@ -263,6 +310,7 @@ namespace nFact.controllers
         public string storyName;
         public string[] stories;
         public EnvironmentCycle[] environmentCycle;
+        public string label;
     }
 
     public class EnvironmentCycle
@@ -284,6 +332,7 @@ namespace nFact.controllers
         public DateTime end;
         public bool enableAnnotation;
         public string annotation;
+        public int cycleTime;
     }
 
     public class ChartData

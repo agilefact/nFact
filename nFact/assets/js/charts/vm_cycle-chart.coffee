@@ -1,12 +1,32 @@
 ﻿class App.CycleChart
-	render: (spec, title, subTitle, stories, data, annotations) ->
+	render: (spec, title, subTitle, stories, data, labelText) ->
 		console.log(spec)
 		$("#container").highcharts
-			annotationsOptions:
-				enabledButtons: false
 			chart:
-				type: 'columnrange',
+				type: 'columnrange'
 				inverted: true
+				marginRight: 250
+				events:
+					load: ->
+						label = this.renderer.label(labelText)
+						label.css({width: '260px'})
+						attr =
+							stroke: 'silver'
+							'stroke-width': 1
+							r: 2
+							padding: 10
+
+						label.attr(attr)
+						label.add();
+
+						align =
+							align: 'right'
+							x: -20
+							y: 100
+							verticalAlign: 'top'
+
+						extend = Highcharts.extend(label.getBBox(), align)
+						label.align(extend, null, 'spacingBox')
 
 			title:
 				text: title
@@ -17,9 +37,23 @@
 				x: -20
 
 			yAxis:
+				max: Date.UTC(2014, 07, 05)
 				type: 'datetime'
 				title: 
 					text: 'Time'
+				
+				plotLines: [
+					color: 'red'
+					value: Date.UTC(2014, 07, 01)
+					dashStyle : 'longdash'
+					width : 1
+					label:
+						color: 'red'
+						text: 'Release 35'
+						verticalAlign: 'bottom'
+						textAlign: 'right'
+						y: -50
+					]
 
 			xAxis:
 				categories: stories
@@ -37,9 +71,10 @@
 			legend:
 				layout: "vertical"
 				align: "right"
-				verticalAlign: "middle"
+				verticalAlign: "top"
+				y: 50
+				x: -80
 				borderWidth: 0
-			annotations: annotations
 			
 
 		

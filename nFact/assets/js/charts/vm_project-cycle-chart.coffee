@@ -41,7 +41,6 @@ class App.ProjectChart
 		barData = []
 		maxDays = 0
 		barIndex = 0
-		annotations	 = []
 		$.each( jsonData.environmentCycle, ( index, environment ) ->	
 			data = []
 			color = scope.pickColor(index)
@@ -52,17 +51,10 @@ class App.ProjectChart
 				if duration.enableAnnotation
 					label =
 						enabled: true
+						padding: 10
 						formatter: ->
 							if this.y == this.point.high
-								"xx"
-				if duration.enableAnnotation
-					annotation = 
-						title:
-							text: duration.annotation
-						anchorX: "middle"
-						anchorY: "middle"
-						linkedTo: barIndex
-					annotations.push(annotation)
+								duration.annotation
 							
 				data.push({low: start, high: end, color: color, id: barIndex, dataLabels: label})
 				barIndex++
@@ -72,7 +64,7 @@ class App.ProjectChart
 		)	
 
 		spec = scope.spec
-		title = "CommBiz Asset Finance"
+		title = "CommBiz - Team Top Gun"
 		subtitle = "Story Cycle Time"
 		storyList = jsonData.stories
 		
@@ -82,6 +74,6 @@ class App.ProjectChart
 		)	
 
 		chart = new App.CycleChart()
-		chart.render(spec, title, subtitle, jsonData.stories, barData, annotations)
+		chart.render(spec, title, subtitle, jsonData.stories, barData, jsonData.label)
 		
 	
