@@ -68,6 +68,18 @@
 
 			series: data
 
+			plotOptions:
+				bar:
+					pointWidth: 20	
+				series:
+					cursor: 'pointer'
+					point:
+						events:
+							click: (event) -> 
+								storyId = this.category
+								url = "/" + spec + "/story/" + storyId + "/chart"
+								window.location.replace(url)
+
 			legend:
 				layout: "vertical"
 				align: "right"
