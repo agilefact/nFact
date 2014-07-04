@@ -12,7 +12,7 @@ class App.Chart
 		@spec = model.spec
 		@storyId = model.storyId
 		@back = ->
-			url = "/" + @spec + "/deployment"
+			url = "/" + @spec + "/cycle"
 			window.location.replace(url)
 			
 	create: ->
@@ -80,7 +80,7 @@ class App.Chart
 
 		spec = scope.spec
 		title = "CommBiz - Team Top Gun"
-		subTitle = "Story: " + jsonData.storyName
+		subTitle = "<b>Story Test Automation: </b>" + jsonData.storyName
 		storyList = jsonData.stories
 
 		chart.render(spec, title, subTitle, storyList, barData, maxDays)
@@ -175,7 +175,6 @@ class App.Chart
 								testRun = this.id
 								spec = self.spec
 								url = "/" + spec + "/" + testRun
-								window.location.href = url
 			tooltip:
 				formatter: -> 
 					data = scope.getTestRun(this.series.name, this.point.id, scope)

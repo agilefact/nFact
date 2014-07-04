@@ -78,7 +78,9 @@
 							click: (event) -> 
 								storyId = this.category
 								url = "/" + spec + "/story/" + storyId + "/chart"
-								window.location.replace(url)
+								
+								if this.color == "#0E7EC4"
+									window.location.href = url
 
 			legend:
 				layout: "vertical"

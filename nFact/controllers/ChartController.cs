@@ -58,7 +58,7 @@ namespace nFact.controllers
             var developmentCycle = GetDevCycleTime(storyDurations);
 
             var totalCycleTime = deploymentCycle.CycleDurations.Sum(c => c.cycleTime);
-            var avgCycle = totalCycleTime/stories.Count();
+            var avgCycle = Math.Round(totalCycleTime / stories.Count(), 1);
 
             var label = new StringBuilder();
             label.Append(string.Format("<b>Avg. Cycle Time:</b> {0} days", avgCycle));
